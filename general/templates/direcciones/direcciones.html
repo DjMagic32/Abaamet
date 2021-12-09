@@ -1,0 +1,17 @@
+{% extends 'list.html' %} {% load static %} {% block head_list %}
+<script src="{% static 'Direcciones\js\list.js' %}"></script>{% endblock head_list %} {% block columns %}
+<tr style="text-align: center;">
+    <th scope="col" style="width:auto;">Nro</th>
+    <th scope="col" style="width: auto;">Pais</th>
+    <th scope="col" style="width: auto;">Estado</th>
+    <th scope="col" style="width: auto;">Municipio</th>
+    <th scope="col" style="width: auto;">Localidad</th>
+    <th scope="col" style="width: auto;">referencia</th>
+    <th scope="col" style="width: auto;">colonia</th>
+    <th scope="col" style="width: auto;">calle</th>
+    <th scope="col" style="width: auto;">num_interior</th>
+    <th scope="col" style="width: auto;">num_exterior</th>
+    <th scope="col" style="width:auto;">codigo_postal</th>
+    <th scope="col" style="width:10;">Accion</th>
+</tr>
+{% endblock columns %} {% block rows %} {% endblock rows %} {% block javascript %} {% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'list.html' %} {% load static %} {% block head_list %}
+<script src="{% static 'Recepcion\list.js' %}"></script>
+{% endblock head_list %} {% block columns %}
+<tr style="text-align: center;">
+    <th scope="col" style="width: 5%;">Nro de Entrada</th>
+    <th scope="col" style="width: 7,6%;">Nombre</th>
+    <th scope="col" style="width: 7,6%;">Marca</th>
+    <th scope="col" style="width: 7,6%;">Modelo</th>
+    <th scope="col" style="width: 7,6%;">Serie</th>
+    <th scope="col" style="width: 7,6%;">Identificacion</th>
+    <th scope="col" style="width: 10,2%;">Descripcion particular</th>
+    <th scope="col" style="width: 7,6%;">Fecha de Recepcion</th>
+    <th scope="col" style="width: 7,6%;">Modo de Recepcion</th>
+    <th scope="col" style="width: 7,6%;">Cliente</th>
+    <th scope="col" style="width: 7,6%;">Estatus</th>
+    <th scope="col" style="width: 7,6%;">Orden de compra</th>
+    <th scope="col" style="width: 5%;">Cotizacion</th>
+    <th scope="col" style="width: 2,6%;">Accion</th>
+
+</tr>
+{% endblock columns %} {% block rows %} {% endblock rows %} {% block javascript %} {% endblock %}

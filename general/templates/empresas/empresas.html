@@ -1,0 +1,8 @@
+{% extends 'list.html' %} {% load static %} {% block head_list %}
+<script src="{% static 'Empresas\js\list.js' %}"></script>{% endblock head_list %} {% block columns %}
+<tr style="text-align: center;">
+    <th scope="col" style="width: 5%;">Nro</th>
+    <th scope="col" style="width: 85%;">Nombre de la Empresa</th>
+    <th scope="col" style="width: 10%;">Accion</th>
+</tr>
+{% endblock columns %} {% block rows %} {% endblock rows %} {% block javascript %} {% endblock %}
