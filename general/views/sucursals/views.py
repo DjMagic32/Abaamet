@@ -1,19 +1,21 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import JsonResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView
-from django.views.generic.edit import DeleteView
-from general.models import Cliente
-from general.forms import ClienteForm
+from general.models import Sucursal, Empresa
+from general.forms import SucursalForm
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import HttpResponseForbidden
 
 
-class ClienteListView(LoginRequiredMixin, ListView):
-    permission_required= ('general.view_cliente','general.add_cliente')
-    model = Cliente
-    template_name='clientes/clientes.html'
-    
+class SucursalsListView(LoginRequiredMixin ,ListView):
+    model = Sucursal
+    template_name='sucursals/sucursals.html'
+    #permission_required = 'general.view_direccion'
+    #permission_denied_message = 'No esta autorizado.'
+
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -24,17 +26,10 @@ class ClienteListView(LoginRequiredMixin, ListView):
             action= request.POST['action']
             if action == 'searchdata':
                 data=[]
-                for i in Cliente.objects.all():
-                    print (i)
+                for i in Sucursal.objects.all():
+
+                    print ('id', i.id_empresa.id)
                     data.append(i.toJSON())
-            elif action == 'add':
-                cli = Cliente()
-                cli.nombre_completo = request.POST['nombre_completo']
-                cli.telefono = request.POST['telefono']
-                cli.telefono_ad = request.POST['telefono_ad']
-                cli.email = request.POST['email']
-                cli.id_empresa = request.POST['id_empresa']
-                cli.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -44,36 +39,36 @@ class ClienteListView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Lista de Clientes'
-        context['create_url']= reverse_lazy('general:ClienteCreateViewpath')
-        context['list_url']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
-        context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
+        context['title']='Lista de Sucursales'
         context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
-        context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
-        context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
+        context['create_url']= reverse_lazy('general:SucursalsCreateViewpath')
+        context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
+        context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
         context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
-        context['entity']= 'Clientes'
-        context['form']= ClienteForm()
+        context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
+        context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
+        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
+        context['entity']= 'Sucursales'
         return context
 
-
-class ClienteCreateView(LoginRequiredMixin, CreateView):
-    model=Cliente
-    form_class= ClienteForm
-    template_name='clientes/create.html'
-    success_url= reverse_lazy('general: ClienteListViewpath')
-
+class SucursalsCreateView(LoginRequiredMixin , CreateView):
+    model=Sucursal
+    form_class= SucursalForm
+    template_name='sucursals/create.html'
+    #permission_required = 'general.add_direccion'
+    #permission_denied_message = 'No esta autorizado.'
+    #success_url= reverse_lazy('general:DireccionesListViewpath')
+    
+    
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
+    
     def post(self, request, *args, **kwargs):
         data={}
         try:
             action= request.POST['action']
             if action == 'add':
-                form= ClienteForm(request.POST)
+                form= SucursalForm(request.POST)
                 data= form.save()
             else:
                 data['error']='No ha ingresado a ninguna opcion'
@@ -83,25 +78,26 @@ class ClienteCreateView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Creacion de un Cliente'
-        context['entity']= 'Clientes'
-        context['list_url']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_prod']= reverse_lazy('general:ClienteListViewpath')
+        context['title']='Creacion de una Sucursal'
+        context['entity']= 'Sucursales'
+        context['list_url']= reverse_lazy('general:SucursalsListViewpath')
+        context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
         context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
         context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
+        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
         context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
         context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
-        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
-
+        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
         context['action']='add'
         return context
 
-class ClienteUpdateView(LoginRequiredMixin, UpdateView):
-    model=Cliente
-    form_class= ClienteForm
-    template_name='clientes/create.html'
-    success_url= reverse_lazy('general:ClienteListViewpath')
+class SucursalsUpdateView(LoginRequiredMixin ,UpdateView):
+    model= Sucursal
+    form_class= SucursalForm
+    template_name='sucursals/create.html'
+    #permission_required = 'general.change_direccion'
+    #permission_denied_message = 'No esta autorizado.'
+    #success_url= reverse_lazy('general:DireccionesListViewpath')
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -109,16 +105,16 @@ class ClienteUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Edicion de un Cliente'
-        context['entity']= 'Clientes'
-        context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
-        context['list_url']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_prod']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
-        context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
-        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
-        context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
+        context['title']='Edicion de una Sucursal'
+        context['entity']= 'Sucursales'
+        context['list_url']= reverse_lazy('general:SucursalsListViewpath')
         context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
+        context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
+        context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
+        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
+        context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
+        context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
+        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
         context['action']='edit'
         return context
 
@@ -134,3 +130,4 @@ class ClienteUpdateView(LoginRequiredMixin, UpdateView):
         except Exception as e:
             data['error']= str(e)
         return JsonResponse(data)
+    

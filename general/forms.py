@@ -42,6 +42,33 @@ class RecepcionForm(ModelForm):
         fields = "__all__"
         labels = {"Numero de entrada": "n_entrada", "nombre": "Nombre","marca": "Marca","modelo": "Modelo", "serie": "Serie", "identificacion": "Identificacion", "descripcion_particular": "Descripcion", "modo": "Modo", "cliente": "Cliente","estatus":"Estatus","orden_compra":"Orden de Compra","n_cotizacion":"Numero de cotizacion"}
 
+""" FORMULARIO SUCURSAL NUEVO """
+class SucursalForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.visible_fields():
+            form.field.widget.attrs["class"] = "form-control"
+        self.fields["rfc"].widget.attrs["placeholder"  ] = "Ingrese el rfc"
+        self.fields["rfc"].widget.attrs["cols"] = 5
+        self.fields["rfc"].widget.attrs["rows"] = 5
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data["error"] = form.errors
+        except Exception as e:
+            data["error"] = str(e)
+        return data
+
+    class Meta:
+        model = Sucursal
+        fields = "__all__"
+        labels = {"rfc": "RFC",}
+
 
 class DireccionesForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -92,9 +119,9 @@ class ClienteForm(ModelForm):
         self.fields["telefono"].widget.attrs["placeholder"] = "Indique el telefono"
         self.fields["telefono_ad"].widget.attrs["placeholder"] = "Indique un telefono adicional"
         self.fields["email"].widget.attrs["placeholder"] = "Indique el email"
-        self.fields["id_sucursal"].widget.attrs["placeholder"] = "Seleccione la sucursal a la cual pertenece"
-        self.fields["id_sucursal"].widget.attrs["cols"] = 5
-        self.fields["id_sucursal"].widget.attrs["rows"] = 5
+        self.fields["id_empresa"].widget.attrs["placeholder"] = "Seleccione la Empresa a la cual pertenece"
+        self.fields["id_empresa"].widget.attrs["cols"] = 5
+        self.fields["id_empresa"].widget.attrs["rows"] = 5
 
     def save(self, commit=True):
         data = {}
@@ -111,7 +138,7 @@ class ClienteForm(ModelForm):
     class Meta:
         model = Cliente
         fields = "__all__"
-        labels = {"nombre_completo": "Nombre Completo", "telefono": "Telefono","telefono_ad": "Telefono adicional","email": "Email", "id_sucursal": "Sucursal"}
+        labels = {"nombre_completo": "Nombre Completo", "telefono": "Telefono","telefono_ad": "Telefono adicional","email": "Email", "id_empresa":"Empresa"}
 
 
 class ProductoForm(ModelForm):
@@ -147,37 +174,6 @@ class ProductoForm(ModelForm):
         labels = {"nombre": "Nombre", "precio": "Precio","marca": "Marca","modelo": "Modelo", "detalle": "Detalle"}
 
 class ServicioForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for form in self.visible_fields():
-            form.field.widget.attrs["class"] = "form-control"
-        self.fields["nombre"].widget.attrs[
-            "placeholder"
-        ] = "Ingrese el nombre del servicio"
-        self.fields["precio"].widget.attrs["placeholder"] = "Indique el precio"
-        self.fields["detalle"].widget.attrs["placeholder"] = "Descripcion del servicio"
-        self.fields["detalle"].widget.attrs["cols"] = 3
-        self.fields["detalle"].widget.attrs["rows"] = 3
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data["error"] = form.errors
-        except Exception as e:
-            data["error"] = str(e)
-        return data
-
-    class Meta:
-        model = Servicio
-        fields = "__all__"
-        labels = {"nombre": "Nombre", "precio": "Precio", "detalle": "Detalle"}
-
-
-class SucursalForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for form in self.visible_fields():

@@ -2,44 +2,12 @@
 <script src="{% static 'Clientes\js\list.js' %}"></script>
 {% endblock head_list %} {% block columns %}
 <tr style="text-align: center;">
-    <th scope="col" style="width: 5%;">Nro</th>
+    <th scope="col" style="width: 10%;">Nro</th>
     <th scope="col" style="width: 20%;">Nombre Completo</th>
     <th scope="col" style="width: 10%; text-align: end;">Telefono</th>
     <th scope="col" style="width: 20%; ">Telefono Adicional</th>
     <th scope="col" style="width: 20%; ">Email</th>
-    <th scope="col" style="width: 15%;">Empresa</th>
+    <th scope="col" style="width: 20%;">Empresa</th>
     <th scope="col" style="width: 10%;">Accion</th>
 </tr>
-{% endblock columns %} {% block rows %} {% endblock rows %} {% block buttons_list %}
-<a class="btn btn-primary btn-flat btnAdd" style="color: white;">
-    <i class="fas fa-plus"></i> Nuevo registro
-</a>
-{% endblock buttons_list %} {% block javascript %}
-<div class="modal fade" id="myModalcliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <form method="POST">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <div class="container-fluid">
-                        <input name="action" type="hidden" value="add"> {% for field in form.visible_fields %}
-                        <div class="form-group">
-                            <label for="email">{{ field.label }}:</label> {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-{% endblock javascript %}
+{% endblock columns %} {% block rows %} {% endblock rows %} {% block javascript %} {% endblock %}

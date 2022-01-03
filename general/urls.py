@@ -9,6 +9,7 @@ from .views.servicios.views import *
 from .views.landing.views import *
 from .views.productos.views import *
 from .views.ingreso.views import *
+from .views.sucursals.views import *
 
 app_name='general'
 
@@ -31,9 +32,14 @@ urlpatterns = [
    path('principal/direcciones/create/', DireccionesCreateView.as_view(), name='DireccionesCreateViewpath'),
    path('principal/direcciones/edit/<int:pk>/', DireccionesUpdateView.as_view(), name='DireccionesUpdateViewpath'),
 
+   path('principal/sucursals', SucursalsListView.as_view(), name='SucursalsListViewpath'),
+   path('principal/sucursals/create/', SucursalsCreateView.as_view(), name='SucursalsCreateViewpath'),
+   path('principal/sucursals/edit/<int:pk>/', SucursalsUpdateView.as_view(), name='SucursalsUpdateViewpath'),
+
    path('principal/empresas', EmpresaListView.as_view(), name='EmpresaListViewpath'),
    path('principal/empresas/create/', EmpresaCreateView.as_view(), name='EmpresaCreateViewpath'),
    path('principal/empresas/edit/<int:pk>/', EmpresaUpdateView.as_view(), name='EmpresaUpdateViewpath'),
+   path('principal/empresas/detail/<int:pk>/', EmpresaDetailView.as_view(), name='EmpresaDetailViewpath'),
 
    path('principal/recepcion', RecepcionListView.as_view(), name='RecepcionListViewpath'),
    path('principal/recepcion/create/', RecepcionCreateView.as_view(), name='RecepcionCreateViewpath'),

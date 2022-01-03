@@ -1,12 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import JsonResponse, HttpResponseRedirect
-from django.views.generic import ListView, CreateView, UpdateView
-from general.models import Empresa
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from general.models import Empresa, Sucursal, Direccion, Cliente
 from general.forms import EmpresaForm
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import PermissionRequiredMixin
+import pandas as pd
+import json
 
 
 
@@ -128,4 +130,58 @@ class EmpresaUpdateView(LoginRequiredMixin, PermissionRequiredMixin ,UpdateView)
         except Exception as e:
             data['error']= str(e)
         return JsonResponse(data)
+
+class EmpresaDetailView (DetailView):
+    model = Empresa
+    template_name = "empresas/detail.html"
+     
+    def get_context_data(self, **kwargs):
+        context = super(EmpresaDetailView, self).get_context_data(**kwargs) 
+        sucursales_s = Sucursal.objects.filter(id_empresa_id = self.object.id).values()
+        clientes_s = Cliente.objects.filter(id_empresa_id = self.object.id).values()
+        direciones_s = Direccion.objects.all().values()
+
+        """ SE CREARON LOS DATAFRAMES CON LOS OBJETOS """
+        direcciones_df = pd.DataFrame(direciones_s)
+        sucursal_df = pd.DataFrame(sucursales_s)
+        clientes_df = pd.DataFrame(clientes_s)
+        print (clientes_df.get('sucursal_id_id'))
+
+        if clientes_df.get('sucursal_id_id') is None:
+            return clientes_df.get('sucursal_id_id')
+        else:
+            clientes_df['sucursal'] = clientes_df['sucursal_id_id']
+            sucursal_df['sucursal'] = sucursal_df['id']
+            direcciones_df['sucursal'] = direcciones_df['id']
+
+            """ JOINT DE LAS 3 TABLAS """
+            dataframe = clientes_df.set_index('sucursal').merge(sucursal_df.set_index('sucursal')).merge(direcciones_df.set_index('sucursal'))
+            print (dataframe)
+            """ PASAMOS EL DATAFRAME A JSON """
+            json_df = dataframe.reset_index().to_json(orient ='records')
+            data_json = []
+            data_json = json.loads(json_df)
+        
+        context['title']= 'Detalles de Empresa'
+        context['entity']= 'Empresas'
+        context['list_url']= reverse_lazy('general:EmpresaListViewpath')
+        context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
+        context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
+        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
+        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
+        context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
+        context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
+        context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
+        context['create_direcction']= reverse_lazy('general:DireccionesCreateViewpath')
+        context['create_sucursals']= reverse_lazy('general:SucursalsCreateViewpath')
+        context['create_cliente']= reverse_lazy('general:ClienteCreateViewpath')
+        context['action']='edit'
+  
+        """ CONTEXTO A JSON """
+        #context['dataframe'] = dataframe.to_html()
+        context['data_json'] = data_json
+        #print (clientes.first().__dict__)
+
+        return context
+    
     

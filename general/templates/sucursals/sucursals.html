@@ -1,0 +1,10 @@
+{% extends 'list.html' %} {% load static %} {% block head_list %}
+<script src="{% static 'Sucursals\list.js' %}"></script>{% endblock head_list %} {% block columns %}
+<tr style="text-align: center;">
+    <th scope="col" style="width:auto;">ID</th>
+    <th scope="col" style="width: auto;">RFC</th>
+    <th scope="col" style="width: auto;">ID Direccion</th>
+    <th scope="col" style="width: auto;">ID Empresa</th>
+    
+</tr>
+{% endblock columns %} {% block rows %} {% endblock rows %} {% block javascript %} {% endblock %}

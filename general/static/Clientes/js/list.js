@@ -16,12 +16,12 @@ $(function() {
             { "data": "telefono" },
             { "data": "telefono_ad" },
             { "data": "email" },
-            { "data": "id_sucursal" },
-            { "data": "id_sucursal" },
+            { "data": "id_empresa" },
+            { "data": "id_empresa" },
 
         ],
         columnDefs: [{
-                targets: [-1],
+                targets: [6],
                 class: 'text-center',
                 orderable: false,
                 render: function(data, type, row) {
@@ -75,7 +75,7 @@ $(function() {
                 class: "text-center",
                 orderable: false,
                 render: function(data, type, row) {
-                    return row.id_sucursal;
+                    return row.id_empresa;
                 }
             },
 

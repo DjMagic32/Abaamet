@@ -12,15 +12,19 @@ $(function() {
         },
         columns: [
             { "data": "id" },
-            { "data": "razon_social" },
+            { "data": "nombre_empresa" },
+            { "data": "phone" },
+            { "data": "email" },
+            { "data": "nombre" },
             { "data": "razon_social" },
         ],
         columnDefs: [{
                 targets: [-1],
-                class: 'text-center',
+                class: 'text-right',
                 orderable: false,
                 render: function(data, type, row) {
                     var buttons = '<a href="empresas/edit/' + row.id + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                    buttons += '<a href="empresas/detail/' + row.id + '/" type="button" class="btn btn-flat"><i class="fas fa-info-circle"></i></a> ';
                     buttons += '<button type="button" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></button>';
                     return buttons;
                 }
@@ -38,7 +42,31 @@ $(function() {
                 class: "text-center",
                 orderable: true,
                 render: function(data, type, row) {
-                    return row.razon_social;
+                    return row.nombre_empresa;
+                }
+            },
+            {
+                targets: [2],
+                class: "text-center",
+                orderable: true,
+                render: function(data, type, row) {
+                    return row.phone;
+                }
+            },
+            {
+                targets: [3],
+                class: "text-center",
+                orderable: true,
+                render: function(data, type, row) {
+                    return row.email;
+                }
+            },
+            {
+                targets: [4],
+                class: "text-center",
+                orderable: true,
+                render: function(data, type, row) {
+                    return row.nombre;
                 }
             },
         ],

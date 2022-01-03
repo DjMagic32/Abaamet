@@ -4,18 +4,20 @@ from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+
+
 # Create your models here.
 
 class Direccion(models.Model):
     id = models.AutoField(primary_key=True)
-    num_interior= models.IntegerField(null=True,verbose_name='num_interior')
-    num_exterior= models.IntegerField(null=True,verbose_name='num_exterior')
-    calle= models.CharField(null=True, max_length=50,verbose_name='calle')
-    colonia= models.CharField(null=True, max_length=20,verbose_name='colonia')
-    pais= models.CharField(null=False,max_length=15,verbose_name='pais')
+    num_interior= models.CharField(max_length=80, null=True,verbose_name='num_interior')
+    num_exterior= models.CharField(max_length=80, null=True,verbose_name='num_exterior')
+    calle= models.CharField(null=True, max_length=50, verbose_name='calle')
+    colonia= models.CharField(null=True, max_length=20, verbose_name='colonia')
+    pais= models.CharField(null=False,max_length=15, verbose_name='pais')
     referencia= models.CharField(max_length=254, null=True,verbose_name='referencia')
-    localidad= models.CharField(max_length=30,null=True,verbose_name='localidad')
-    estado= models.CharField(max_length=20,null=True,verbose_name='estado')
+    localidad= models.CharField(max_length=30, null=True,verbose_name='localidad')
+    estado= models.CharField(max_length=20, null=True,verbose_name='estado')
     municipio= models.CharField(max_length=20, null=True,verbose_name='municipio')
     codigo_postal= models.PositiveIntegerField(null=False,verbose_name='codigo_postal')
     def __str__(self):
@@ -26,7 +28,12 @@ class Direccion(models.Model):
 
 class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
+    nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de empresa', null=True, blank=True)
+    email= models.EmailField(max_length=254,verbose_name='email', null=True, blank=True)
+    nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
+    phone = models.CharField(max_length=12,null=True,verbose_name='phone')
     razon_social = models.CharField(max_length=50,verbose_name='razon_social')
+    numero_cliente = models.CharField(max_length=50,verbose_name='Numero de Cliente') 
     def __str__(self):
         return self.razon_social
     def toJSON(self):
@@ -48,11 +55,12 @@ class Sucursal(models.Model):
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
+    id_empresa = models.ForeignKey(Empresa,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
     nombre_completo = models.CharField(null=True,max_length=40,verbose_name='nombre_completo')
     telefono = models.CharField(max_length=12,verbose_name='telefono')
     telefono_ad = models.CharField(max_length=12,null=True,verbose_name='telefono_ad')
     email= models.EmailField(max_length=254,verbose_name='email')
-    id_sucursal= models.ForeignKey(Sucursal,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='id_sucursal')
+    sucursal_id = models.ForeignKey(Sucursal,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
     def __str__(self):
         return self.nombre_completo
     def toJSON(self):
@@ -61,6 +69,7 @@ class Cliente(models.Model):
     
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
+    id_empresa = models.ForeignKey(Empresa,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
     nombre = models.CharField(max_length=50,verbose_name='nombre')
     precio = models.PositiveIntegerField(verbose_name='precio')
     marca = models.CharField(max_length=50,verbose_name='marca')
@@ -106,6 +115,7 @@ class Cargo(models.Model):
         db_table='g_cargo'
         ordering=['id']
 
+""" ESTE MODELO NO SE ESTA UTILIZANDO, SE PUEDE REMOVER """
 class Usuario(models.Model):
     id= models.PositiveIntegerField(primary_key=True, verbose_name='id')
     email= models.EmailField(verbose_name='email')
