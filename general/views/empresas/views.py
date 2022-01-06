@@ -118,19 +118,6 @@ class EmpresaUpdateView(LoginRequiredMixin, PermissionRequiredMixin ,UpdateView)
         context['action']='edit'
         return context
 
-    def post(self, request, *args, **kwargs):
-        data={}
-        try:
-            action= request.POST['action']
-            if action == 'edit':
-                form= self.get_form()
-                data= form.save()
-            else:
-                data['error']='No ha ingresado a ninguna opcion'
-        except Exception as e:
-            data['error']= str(e)
-        return JsonResponse(data)
-
 class EmpresaDetailView (DetailView):
     model = Empresa
     template_name = "empresas/detail.html"
@@ -183,5 +170,14 @@ class EmpresaDetailView (DetailView):
         #print (clientes.first().__dict__)
 
         return context
+
+
+#Funcion para borrar logicamente
+
+def borrar(request):
+    if(request.method) == 'POST':
+        id = request.POST
+        print(id)
+
     
-    
+

@@ -33,7 +33,8 @@ class Empresa(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
     phone = models.CharField(max_length=12,null=True,verbose_name='phone')
     razon_social = models.CharField(max_length=50,verbose_name='razon_social')
-    numero_cliente = models.CharField(max_length=50,verbose_name='Numero de Cliente') 
+    numero_cliente = models.CharField(max_length=50,verbose_name='Numero de Cliente')
+    empresa_activa = models.BooleanField(verbose_name="activa") 
     def __str__(self):
         return self.razon_social
     def toJSON(self):

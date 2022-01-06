@@ -25,7 +25,12 @@ $(function() {
                 render: function(data, type, row) {
                     var buttons = '<a href="empresas/edit/' + row.id + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a href="empresas/detail/' + row.id + '/" type="button" class="btn btn-flat"><i class="fas fa-info-circle"></i></a> ';
-                    buttons += '<button type="button" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></button>';
+                    if(row.empresa_activa){
+                        buttons += '<button id="'+ row.id + '" type="button" class="btn btn-xs btn-flat delete" alt="Desactivar registro"><i class="fas fa-toggle-off"></i></button>';
+                    }
+                    else{
+                        buttons += '<button id="'+ row.id + '" type="button" class="btn btn-secondary btn-xs btn-flat delete" alt="Activar registro"><i class="fas fa-toggle-on"></i></button>';
+                    }
                     return buttons;
                 }
             },
@@ -72,6 +77,41 @@ $(function() {
         ],
         initComplete: function(settings, json) {
 
+        }
+    });
+});
+
+//Funcion para borrar de manera logica
+$(document).on('click', ".delete", function(e){
+    e.preventDefault();
+    let row = $(this)[0].id;
+    Swal.fire({
+        title: '¿Está seguro de desactivar este registro?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText:'Cancelar',
+    }).then((result) => {
+        if(result.isConfirmed){
+            $.ajax({
+                url:"EmpresaDeleteViewpath",
+                method: 'POST',
+                data : {
+                    "empresa": row
+                },
+            }).then(function (request){
+                console.log(request);
+            }).catch(function(error){
+                console.log(error);
+            });
+        }
+        else{
+            Swal.fire({
+                title:"Registro no desactivado",
+                icon:"warning"
+            });
         }
     });
 });

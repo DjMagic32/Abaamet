@@ -10,6 +10,7 @@ from .views.landing.views import *
 from .views.productos.views import *
 from .views.ingreso.views import *
 from .views.sucursals.views import *
+from general.views import *
 
 app_name='general'
 
@@ -40,6 +41,7 @@ urlpatterns = [
    path('principal/empresas/create/', EmpresaCreateView.as_view(), name='EmpresaCreateViewpath'),
    path('principal/empresas/edit/<int:pk>/', EmpresaUpdateView.as_view(), name='EmpresaUpdateViewpath'),
    path('principal/empresas/detail/<int:pk>/', EmpresaDetailView.as_view(), name='EmpresaDetailViewpath'),
+   path('principal/empresas/borrar', borrar, name="EmpresaDeleteViewpath"),
 
    path('principal/recepcion', RecepcionListView.as_view(), name='RecepcionListViewpath'),
    path('principal/recepcion/create/', RecepcionCreateView.as_view(), name='RecepcionCreateViewpath'),
