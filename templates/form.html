@@ -8,7 +8,8 @@
         </div>
         <div class="card-body">
             {% csrf_token %}
-            <input type="hidden" name="action" value="{{ action }}"> {% for field in form.visible_fields %}
+            <input type="hidden" name="action" value="{{ action }}"> 
+            {% for field in form.visible_fields %}
             <div class="form-group">
                 <div class="row">
                     <div class="col-4"></div>

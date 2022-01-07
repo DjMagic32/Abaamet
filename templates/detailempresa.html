@@ -5,19 +5,24 @@
 <script src="{% static 'lib\Datatable\DataTables-1.11.2\js\dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib\Datatable\Plugins\Responsive-2.2.9\js\dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib\Datatable\Plugins\Responsive-2.2.9\js\responsive.bootstrap4.min.js' %}"></script>
-
 {% block head_list %} {% endblock head_list %} {% endblock head %} {% block content %}
+
 <div class="card card-default p-3 m-3">
     <div class="card-header">
-        <ul>
-            <li><h1 class="card-title">{{ title }} / {{ user }}</h1></li>
-            <li><a href="{{ create_cliente }}" type="button" class="btn btn-warning btn-xs btn-flat"> Crear Contacto de Empresa </a></li>
-            <li><a href= "{{ create_direcction }}" type="button" class="btn btn-warning btn-xs btn-flat"> Crear Direccion </a></li>
-            <li><a href="{{ create_sucursals }}" type="button" class="btn btn-warning btn-xs btn-flat"> Crear Sucursal </a></li>
-        </ul>
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link justify-content-end" href="{{ create_cliente }}">Crear Contacto de Empresa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link justify-content-end" href="{{ create_direcction }}">Crear Direccion</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link justify-content-end" href="{{ create_sucursals }}">Crear Sucursal</a>
+            </li>
+          </ul>
     </div>
     <div class="card-body">
-        <h1>Sucursales</h1>
+        <h3>Sucursales</h3>
         <table class="table" id="datatable">
             {% csrf_token %}
             <thead>
@@ -26,18 +31,6 @@
             <tbody>
                 {% block rows %} {% endblock rows %}
             </tbody>
-        </table>
-        <table class="table table-striped">
-            {{sucursal_df|safe}}
-        </table>
-        <table class="table table-striped">
-            {{clientes_df|safe}}
-        </table>
-        <table class="table table-striped">
-            {{direcciones_df|safe}}
-        </table>
-        <table class="table table-striped">
-            {{dataframe|safe}}
         </table>
     </div>
     <div class="card-footer">
