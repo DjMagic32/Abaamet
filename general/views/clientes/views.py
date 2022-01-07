@@ -63,11 +63,14 @@ class ClienteCreateView(LoginRequiredMixin, CreateView):
     model=Cliente
     form_class= ClienteForm
     template_name='clientes/create.html'
-    success_url= reverse_lazy('general: ClienteListViewpath')
+    #permission_required = 'general.add_empresa'
+    #permission_denied_message = 'No esta autorizado.'
+    success_url= reverse_lazy('general:ClienteListViewpath')
+    
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
+        
     def post(self, request, *args, **kwargs):
         data={}
         try:
@@ -83,17 +86,16 @@ class ClienteCreateView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Creacion de un Cliente'
-        context['entity']= 'Clientes'
-        context['list_url']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_prod']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
+        context['title']='Creación de un Cliente'
+        context['entity']= 'Empresas'
+        context['list_url']= reverse_lazy('general:EmpresaListViewpath')
+        context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
         context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
-        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
+        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
         context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
         context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
-        context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
-
+        context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
+        context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
         context['action']='add'
         return context
 
@@ -109,7 +111,7 @@ class ClienteUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Edicion de un Cliente'
+        context['title']='Edición de un Cliente'
         context['entity']= 'Clientes'
         context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
         context['list_url']= reverse_lazy('general:ClienteListViewpath')

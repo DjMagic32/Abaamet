@@ -113,15 +113,13 @@ class ClienteForm(ModelForm):
         super().__init__(*args, **kwargs)
         for form in self.visible_fields():
             form.field.widget.attrs["class"] = "form-control"
-        self.fields["nombre_completo"].widget.attrs[
-            "placeholder"
-        ] = "Ingrese el nombre del Cliente"
+        self.fields["nombre_completo"].widget.attrs["placeholder"] = "Ingrese el nombre del Cliente"
         self.fields["telefono"].widget.attrs["placeholder"] = "Indique el telefono"
         self.fields["telefono_ad"].widget.attrs["placeholder"] = "Indique un telefono adicional"
         self.fields["email"].widget.attrs["placeholder"] = "Indique el email"
-        self.fields["id_empresa"].widget.attrs["placeholder"] = "Seleccione la Empresa a la cual pertenece"
-        self.fields["id_empresa"].widget.attrs["cols"] = 5
-        self.fields["id_empresa"].widget.attrs["rows"] = 5
+        self.fields["sucursal_id"].widget.attrs["placeholder"] = "Seleccione la sucursal a la cual pertenece"
+        self.fields["sucursal_id"].widget.attrs["cols"] = 5
+        self.fields["sucursal_id"].widget.attrs["rows"] = 5
 
     def save(self, commit=True):
         data = {}
@@ -138,7 +136,7 @@ class ClienteForm(ModelForm):
     class Meta:
         model = Cliente
         fields = "__all__"
-        labels = {"nombre_completo": "Nombre Completo", "telefono": "Telefono","telefono_ad": "Telefono adicional","email": "Email", "id_empresa":"Empresa"}
+        #labels = {"nombre_completo": "Nombre Completo", "telefono": "Telefono","telefono_ad": "Telefono adicional","email": "Email", "sucursal_id": "Sucursal"}
 
 
 class ProductoForm(ModelForm):

@@ -78,7 +78,7 @@ class EmpresaCreateView(LoginRequiredMixin, PermissionRequiredMixin ,CreateView)
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Creacion de un Empresa'
+        context['title']='Creación de una Empresa'
         context['entity']= 'Empresas'
         context['list_url']= reverse_lazy('general:EmpresaListViewpath')
         context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
@@ -105,7 +105,7 @@ class EmpresaUpdateView(LoginRequiredMixin, PermissionRequiredMixin ,UpdateView)
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['title']='Edicion de un Empresa'
+        context['title']='Edición de una Empresa'
         context['entity']= 'Empresas'
         context['list_url']= reverse_lazy('general:EmpresaListViewpath')
         context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
@@ -137,30 +137,14 @@ class EmpresaDetailView (DetailView):
      
     def get_context_data(self, **kwargs):
         context = super(EmpresaDetailView, self).get_context_data(**kwargs) 
-        sucursales_s = Sucursal.objects.filter(id_empresa_id = self.object.id).values()
-        clientes_s = Cliente.objects.filter(id_empresa_id = self.object.id).values()
-        direciones_s = Direccion.objects.all().values()
+        sucursales_s = Sucursal.objects.filter(id_empresa_id = self.object.id)
+        clientes_s = Cliente.objects.filter(id_empresa_id = self.object.id)
+        direciones_s = Direccion.objects.all()
+        sucursales_values = Sucursal.objects.filter(id_empresa_id = self.object.id).values()
 
-        """ SE CREARON LOS DATAFRAMES CON LOS OBJETOS """
-        direcciones_df = pd.DataFrame(direciones_s)
-        sucursal_df = pd.DataFrame(sucursales_s)
-        clientes_df = pd.DataFrame(clientes_s)
-        print (clientes_df.get('sucursal_id_id'))
-
-        if clientes_df.get('sucursal_id_id') is None:
-            return clientes_df.get('sucursal_id_id')
-        else:
-            clientes_df['sucursal'] = clientes_df['sucursal_id_id']
-            sucursal_df['sucursal'] = sucursal_df['id']
-            direcciones_df['sucursal'] = direcciones_df['id']
-
-            """ JOINT DE LAS 3 TABLAS """
-            dataframe = clientes_df.set_index('sucursal').merge(sucursal_df.set_index('sucursal')).merge(direcciones_df.set_index('sucursal'))
-            print (dataframe)
-            """ PASAMOS EL DATAFRAME A JSON """
-            json_df = dataframe.reset_index().to_json(orient ='records')
-            data_json = []
-            data_json = json.loads(json_df)
+        print (sucursales_s)
+        print (clientes_s)
+        print (direciones_s)
         
         context['title']= 'Detalles de Empresa'
         context['entity']= 'Empresas'
@@ -175,13 +159,11 @@ class EmpresaDetailView (DetailView):
         context['create_direcction']= reverse_lazy('general:DireccionesCreateViewpath')
         context['create_sucursals']= reverse_lazy('general:SucursalsCreateViewpath')
         context['create_cliente']= reverse_lazy('general:ClienteCreateViewpath')
-        context['action']='edit'
-  
-        """ CONTEXTO A JSON """
-        #context['dataframe'] = dataframe.to_html()
-        context['data_json'] = data_json
-        #print (clientes.first().__dict__)
+
+        context['sucursales_s'] = sucursales_s
+        context['direciones_s'] = direciones_s
+        context['sucursales_values'] = sucursales_values
+        context['clientes_s'] = clientes_s
+        print (sucursales_values)
 
         return context
-    
-    

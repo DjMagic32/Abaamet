@@ -10,16 +10,16 @@ from django.contrib.auth.models import User
 
 class Direccion(models.Model):
     id = models.AutoField(primary_key=True)
-    num_interior= models.CharField(max_length=80, null=True,verbose_name='num_interior')
-    num_exterior= models.CharField(max_length=80, null=True,verbose_name='num_exterior')
-    calle= models.CharField(null=True, max_length=50, verbose_name='calle')
-    colonia= models.CharField(null=True, max_length=20, verbose_name='colonia')
-    pais= models.CharField(null=False,max_length=15, verbose_name='pais')
-    referencia= models.CharField(max_length=254, null=True,verbose_name='referencia')
-    localidad= models.CharField(max_length=30, null=True,verbose_name='localidad')
-    estado= models.CharField(max_length=20, null=True,verbose_name='estado')
-    municipio= models.CharField(max_length=20, null=True,verbose_name='municipio')
-    codigo_postal= models.PositiveIntegerField(null=False,verbose_name='codigo_postal')
+    num_interior= models.CharField(max_length=80, null=True,verbose_name='Número Interior')
+    num_exterior= models.CharField(max_length=80, null=True,verbose_name='Número Exterior')
+    calle= models.CharField(null=True, max_length=50, verbose_name='Calle')
+    colonia= models.CharField(null=True, max_length=20, verbose_name='Colonia')
+    pais= models.CharField(null=False,max_length=15, verbose_name='Pais')
+    referencia= models.CharField(max_length=254, null=True,verbose_name='Referencia')
+    localidad= models.CharField(max_length=30, null=True,verbose_name='Localidad')
+    estado= models.CharField(max_length=20, null=True,verbose_name='Estado')
+    municipio= models.CharField(max_length=20, null=True,verbose_name='Municipio')
+    codigo_postal= models.PositiveIntegerField(null=False,verbose_name='Código postal')
     def __str__(self):
         return self.localidad
     def toJSON(self):
@@ -28,14 +28,14 @@ class Direccion(models.Model):
 
 class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de empresa', null=True, blank=True)
-    email= models.EmailField(max_length=254,verbose_name='email', null=True, blank=True)
+    nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
+    email= models.EmailField(max_length=254,verbose_name='Email', null=True, blank=True)
     nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
-    phone = models.CharField(max_length=12,null=True,verbose_name='phone')
-    razon_social = models.CharField(max_length=50,verbose_name='razon_social')
-    numero_cliente = models.CharField(max_length=50,verbose_name='Numero de Cliente') 
+    phone = models.CharField(max_length=12,null=True,verbose_name='Teléfono')
+    razon_social = models.CharField(max_length=50,verbose_name='Razón social')
+    numero_cliente = models.CharField(max_length=50,verbose_name='Número de Cliente') 
     def __str__(self):
-        return self.razon_social
+        return self.nombre_empresa
     def toJSON(self):
         item= model_to_dict(self)
         return item
@@ -43,11 +43,12 @@ class Empresa(models.Model):
 
 class Sucursal(models.Model):
     id= models.AutoField(primary_key=True)
-    rfc = models.CharField(null=True, max_length=30,verbose_name='rfc')
-    id_direccion= models.ForeignKey(Direccion,null=True, blank=True, on_delete= DO_NOTHING,verbose_name='direccion')
-    id_empresa = models.ForeignKey(Empresa,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
+    nombre_sucursal = models.CharField(null=True, max_length=50,verbose_name='Sucursal')
+    rfc = models.CharField(null=True, max_length=30,verbose_name='RFC')
+    id_direccion= models.ForeignKey(Direccion,null=True, blank=True, on_delete= DO_NOTHING,verbose_name='dirección')
+    id_empresa = models.ForeignKey(Empresa, null=True, blank=True, on_delete=DO_NOTHING, verbose_name='Empresa')
     def __str__(self):
-        return self.rfc
+        return self.nombre_sucursal
     def toJSON(self):
         item= model_to_dict(self)
         return item
@@ -55,12 +56,12 @@ class Sucursal(models.Model):
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
-    id_empresa = models.ForeignKey(Empresa,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
-    nombre_completo = models.CharField(null=True,max_length=40,verbose_name='nombre_completo')
-    telefono = models.CharField(max_length=12,verbose_name='telefono')
-    telefono_ad = models.CharField(max_length=12,null=True,verbose_name='telefono_ad')
-    email= models.EmailField(max_length=254,verbose_name='email')
-    sucursal_id = models.ForeignKey(Sucursal,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
+    id_empresa = models.ForeignKey(Empresa,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='Empresa')
+    nombre_completo = models.CharField(null=True,max_length=40,verbose_name='Nombre completo')
+    telefono = models.CharField(max_length=12,verbose_name='Teléfono')
+    telefono_ad = models.CharField(max_length=12,null=True,verbose_name='Teléfono Celular')
+    email= models.EmailField(max_length=254,verbose_name='Email')
+    sucursal_id = models.ForeignKey(Sucursal,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='Sucursal')
     def __str__(self):
         return self.nombre_completo
     def toJSON(self):
@@ -70,12 +71,12 @@ class Cliente(models.Model):
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     id_empresa = models.ForeignKey(Empresa,null=True, blank=True, on_delete=DO_NOTHING,verbose_name='empresa')
-    nombre = models.CharField(max_length=50,verbose_name='nombre')
-    precio = models.PositiveIntegerField(verbose_name='precio')
-    marca = models.CharField(max_length=50,verbose_name='marca')
-    modelo = models.CharField(max_length=50,verbose_name='model')
-    detalle = models.TextField( verbose_name='detalle')
-    activo= models.BooleanField(verbose_name='activo', default=True)
+    nombre = models.CharField(max_length=50,verbose_name='Nombre')
+    precio = models.PositiveIntegerField(verbose_name='Precio')
+    marca = models.CharField(max_length=50,verbose_name='Marca')
+    modelo = models.CharField(max_length=50,verbose_name='Modelo')
+    detalle = models.TextField( verbose_name='Detalle')
+    activo= models.BooleanField(verbose_name='Activo', default=True)
     def __str__(self):
         return self.nombre
     def toJSON(self):
@@ -89,10 +90,10 @@ class Producto(models.Model):
 
 class Servicio(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50,verbose_name='nombre')
-    precio = models.PositiveIntegerField(verbose_name='precio')
-    detalle = models.TextField( verbose_name='detalle')
-    activo= models.BooleanField(verbose_name='activo', default=True)
+    nombre = models.CharField(max_length=50,verbose_name='Nombre')
+    precio = models.PositiveIntegerField(verbose_name='Precio')
+    detalle = models.TextField( verbose_name='Detalle')
+    activo= models.BooleanField(verbose_name='Activo', default=True)
     def __str__(self):
         return self.nombre
     def toJSON(self):
@@ -106,7 +107,7 @@ class Servicio(models.Model):
 
 class Cargo(models.Model):
     id=models.PositiveIntegerField(primary_key=True, verbose_name='id')
-    nombre=models.CharField(max_length=100, verbose_name='cargo')
+    nombre=models.CharField(max_length=100, verbose_name='Cargo')
     def __str__(self):
         return self.nombre
     class Meta:
@@ -118,8 +119,8 @@ class Cargo(models.Model):
 """ ESTE MODELO NO SE ESTA UTILIZANDO, SE PUEDE REMOVER """
 class Usuario(models.Model):
     id= models.PositiveIntegerField(primary_key=True, verbose_name='id')
-    email= models.EmailField(verbose_name='email')
-    cargo= models.ForeignKey(Cargo,null=False, blank=False,on_delete=DO_NOTHING, verbose_name='cargo')
+    email= models.EmailField(verbose_name='Email')
+    cargo= models.ForeignKey(Cargo,null=False, blank=False,on_delete=DO_NOTHING, verbose_name='Cargo')
     def __str__(self):
         return self.email
     class Meta:
@@ -166,19 +167,19 @@ class Recepcion(models.Model):
     ]
     
 
-    n_entrada = models.AutoField(primary_key=True,verbose_name='n_entrada')
-    nombre = models.CharField(max_length=50,verbose_name='nombre')
-    marca = models.CharField(max_length=50,verbose_name='marca')
-    modelo = models.CharField(max_length=50,verbose_name='model')
-    serie = models.CharField( verbose_name='detalle',max_length=15)
-    identificacion= models.CharField(verbose_name='identificacion',max_length=10)
-    descripcion_particular = models.CharField(verbose_name='descripcion_particular',max_length=25)
-    fecha_de_recepcion = models.DateField(verbose_name='fecha_de_recepcion',null=True)
+    n_entrada = models.AutoField(primary_key=True,verbose_name='Número de entrada')
+    nombre = models.CharField(max_length=50,verbose_name='Nombre')
+    marca = models.CharField(max_length=50,verbose_name='Marca')
+    modelo = models.CharField(max_length=50,verbose_name='Modelo')
+    serie = models.CharField( verbose_name='Detalle',max_length=15)
+    identificacion= models.CharField(verbose_name='Identificación',max_length=10)
+    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25)
+    fecha_de_recepcion = models.DateField(verbose_name='Fecha de recepción',null=True)
     modo=models.CharField(choices=modoChoices,max_length=15)
     cliente= models.ForeignKey(Cliente,verbose_name='cliente',on_delete= DO_NOTHING)
     estatus= models.CharField(choices=estatusChoices, max_length=15)
-    orden_compra= models.CharField(max_length=15, verbose_name='orden_ compra')
-    n_cotizacion= models.CharField(max_length=15,verbose_name='cotizacion')
+    orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra')
+    n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización')
     
 
     def save(self, *args,**kwargs):
@@ -196,17 +197,17 @@ class Recepcion(models.Model):
         ordering= ['n_entrada']
 
 class Ingreso(models.Model):
-    Calibracion = 'Calibracion'
-    Calificacion = 'Calificacion'
+    Calibracion = 'Calibración'
+    Calificacion = 'Calificación'
     servChoices = [
-        (Calibracion, 'Calibracion'),
-        (Calificacion, 'Calificacion'),
+        (Calibracion, 'Calibración'),
+        (Calificacion, 'Calificación'),
     ]
     id= models.AutoField(primary_key=True)
-    n_recepcion =models.ForeignKey(Recepcion, null=False, blank=False,verbose_name='n_entrada', on_delete=DO_NOTHING)
-    n_servicio = models.ForeignKey(Servicio,null=True,blank=True, on_delete=DO_NOTHING,verbose_name='servicio')
-    serv_prest = models.CharField(choices=servChoices, max_length=15,verbose_name='serv_prest')
-    fecha_ingreso = models.DateField(verbose_name='fecha_almacen')
+    n_recepcion =models.ForeignKey(Recepcion, null=False, blank=False,verbose_name='Número de entrada', on_delete=DO_NOTHING)
+    n_servicio = models.ForeignKey(Servicio,null=True,blank=True, on_delete=DO_NOTHING,verbose_name='Servicio')
+    serv_prest = models.CharField(choices=servChoices, max_length=15,verbose_name='Servicio prestado')
+    fecha_ingreso = models.DateField(verbose_name='Fecha de ingreso a almacén')
 
     def toJSON(self):
         item= model_to_dict(self)
