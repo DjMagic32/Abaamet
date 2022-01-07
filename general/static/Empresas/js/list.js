@@ -26,10 +26,11 @@ $(function() {
                     var buttons = '<a href="empresas/edit/' + row.id + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a href="empresas/detail/' + row.id + '/" type="button" class="btn btn-flat"><i class="fas fa-info-circle"></i></a> ';
                     if(row.empresa_activa){
-                        buttons += '<button id="'+ row.id + '" type="button" class="btn btn-xs btn-flat delete" alt="Desactivar registro"><i class="fas fa-toggle-off"></i></button>';
+                        buttons += '<button type="button" id="'+ row.id + '" class="btn btn-xs btn-flat delete"  alt="Activar registro"><i class="fas fa-toggle-on"></i></button>';
                     }
                     else{
-                        buttons += '<button id="'+ row.id + '" type="button" class="btn btn-secondary btn-xs btn-flat delete" alt="Activar registro"><i class="fas fa-toggle-on"></i></button>';
+                        buttons += '<button type="button" id="' + row.id + '" class="btn btn-xs btn-flat active" alt="Desactivar registro"><i class="fas fa-toggle-off"></i></button>';
+                        
                     }
                     return buttons;
                 }
@@ -84,7 +85,9 @@ $(function() {
 //Funcion para borrar de manera logica
 $(document).on('click', ".delete", function(e){
     e.preventDefault();
-    let row = $(this)[0].id;
+    let val = $(this)[0].id;
+    console.log(val);
+    let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     Swal.fire({
         title: '¿Está seguro de desactivar este registro?',
         icon: 'warning',
@@ -96,10 +99,13 @@ $(document).on('click', ".delete", function(e){
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
-                url:"EmpresaDeleteViewpath",
+                url:"empresas/borrar",
+                headers: {'X-CSRFToken': csrftoken},
+                mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "empresa": row
+                    "id": val,
+                    "empresa_activa": false
                 },
             }).then(function (request){
                 console.log(request);
@@ -107,10 +113,38 @@ $(document).on('click', ".delete", function(e){
                 console.log(error);
             });
         }
-        else{
-            Swal.fire({
-                title:"Registro no desactivado",
-                icon:"warning"
+    });
+});
+
+//funcion para activar de manera logica
+$(document).on('click', ".active", function(e){
+    e.preventDefault();
+    let val = $(this)[0].id;
+    console.log(val);
+    let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    Swal.fire({
+        title: '¿Está seguro de activar este registro?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText:'Cancelar',
+    }).then((result) => {
+        if(result.isConfirmed){
+            $.ajax({
+                url:"empresas/borrar",
+                headers: {'X-CSRFToken': csrftoken},
+                mode: 'same-origin',
+                method: 'POST',
+                data : {
+                    "id": val,
+                    "empresa_activa": true
+                },
+            }).then(function (request){
+                console.log(request);
+            }).catch(function(error){
+                console.log(error);
             });
         }
     });

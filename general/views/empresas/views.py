@@ -176,8 +176,14 @@ class EmpresaDetailView (DetailView):
 
 def borrar(request):
     if(request.method) == 'POST':
-        id = request.POST
-        print(id)
-
-    
+        data = request.POST
+        Empresa.id = data['id'][0]
+        Empresa.empresa_activa = data['empresa_activa'][0]
+        status = Empresa.save
+        print(status)
+        exit()
+        if Empresa.save:
+            return JsonResponse({"status": "success"})
+        else:
+            return JsonResponse({"status": "failed"})
 
