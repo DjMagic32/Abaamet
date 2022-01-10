@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.checks.messages import DEBUG
 from django.http.response import JsonResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from general.models import Empresa, Sucursal, Direccion, Cliente
@@ -118,6 +119,7 @@ class EmpresaUpdateView(LoginRequiredMixin, PermissionRequiredMixin ,UpdateView)
         context['action']='edit'
         return context
 
+
 class EmpresaDetailView (DetailView):
     model = Empresa
     template_name = "empresas/detail.html"
@@ -174,16 +176,21 @@ class EmpresaDetailView (DetailView):
 
 #Funcion para borrar logicamente
 
-def borrar(request):
-    if(request.method) == 'POST':
-        data = request.POST
-        Empresa.id = data['id'][0]
-        Empresa.empresa_activa = data['empresa_activa'][0]
-        status = Empresa.save
-        print(status)
-        exit()
-        if Empresa.save:
-            return JsonResponse({"status": "success"})
+def borrar(request, id_empresa):
+    try:
+        if(request.method) == 'POST':
+            data = request.POST
+            empresa_activa = data['active'][0]
+            if empresa_activa == 'false':
+                model = Empresa(id = id_empresa, empresa_activa = False)
+                model.save()
+            else:
+                model = Empresa(id = id_empresa, empresa_activa = True)
+                model.save()
+            return JsonResponse({"status" : "success", "code": "200"})
+    except Exception as e:
+        if DEBUG == True:
+            return e
         else:
-            return JsonResponse({"status": "failed"})
+            return JsonResponse({"status": "failed", "code": "500"})
 

@@ -86,7 +86,6 @@ $(function() {
 $(document).on('click', ".delete", function(e){
     e.preventDefault();
     let val = $(this)[0].id;
-    console.log(val);
     let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     Swal.fire({
         title: '¿Está seguro de desactivar este registro?',
@@ -99,16 +98,25 @@ $(document).on('click', ".delete", function(e){
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
-                url:"empresas/borrar",
+                url:"empresas/borrar/"+val+"/",
                 headers: {'X-CSRFToken': csrftoken},
                 mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "id": val,
-                    "empresa_activa": false
+                    "active": false
                 },
             }).then(function (request){
-                console.log(request);
+                data = JSON.parse(request)
+                console.log(data);
+                if(data.code == '200'){
+                    Swal.fire({
+                        title:"Exito",
+                        icon:"success",
+                        text:"Se ha desactivado el registro exitosamente"
+                    }).then((result) => {
+                        console.log(result);
+                    })
+                }
             }).catch(function(error){
                 console.log(error);
             });
@@ -138,11 +146,10 @@ $(document).on('click', ".active", function(e){
                 mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "id": val,
-                    "empresa_activa": true
+                    "active": true
                 },
             }).then(function (request){
-                console.log(request);
+                data = request
             }).catch(function(error){
                 console.log(error);
             });
