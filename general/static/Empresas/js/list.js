@@ -105,20 +105,17 @@ $(document).on('click', ".delete", function(e){
                 data : {
                     "active": false
                 },
-            }).then(function (request){
-                data = JSON.parse(request)
-                console.log(data);
-                if(data.code == '200'){
+                success: function(request){
                     Swal.fire({
-                        title:"Exito",
-                        icon:"success",
-                        text:"Se ha desactivado el registro exitosamente"
-                    }).then((result) => {
-                        console.log(result);
-                    })
+                        title: 'Registro desactivado exitosamente',
+                        icon: 'success',
+                        showCancelButton: false,
+                    }).then( (response) => {
+                        if(response.isConfirmed){
+                            location.reload()
+                        }
+                    });
                 }
-            }).catch(function(error){
-                console.log(error);
             });
         }
     });
@@ -128,7 +125,6 @@ $(document).on('click', ".delete", function(e){
 $(document).on('click', ".active", function(e){
     e.preventDefault();
     let val = $(this)[0].id;
-    console.log(val);
     let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     Swal.fire({
         title: '¿Está seguro de activar este registro?',
@@ -141,17 +137,25 @@ $(document).on('click', ".active", function(e){
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
-                url:"empresas/borrar",
+                url:"empresas/borrar/"+val+"/",
                 headers: {'X-CSRFToken': csrftoken},
                 mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "active": true
+                    "active": false
                 },
-            }).then(function (request){
-                data = request
-            }).catch(function(error){
-                console.log(error);
+                success: function(request){
+                    data = JSON.parse(request);
+                    Swal.fire({
+                        title: 'Registro activado exitosamente',
+                        icon: 'success',
+                        showCancelButton: false,
+                    }).then( (response) => {
+                        if(response.isConfirmed){
+                            location.reload()
+                        }
+                    });
+                }
             });
         }
     });

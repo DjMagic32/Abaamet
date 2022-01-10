@@ -182,11 +182,11 @@ def borrar(request, id_empresa):
             data = request.POST
             empresa_activa = data['active'][0]
             if empresa_activa == 'false':
-                model = Empresa(id = id_empresa, empresa_activa = False)
-                model.save()
+                model = Empresa
+                model.objects.filter(id = id_empresa).update(empresa_activa = False)
             else:
-                model = Empresa(id = id_empresa, empresa_activa = True)
-                model.save()
+                model = Empresa
+                model.objects.filter(id = id_empresa).update(empresa_activa = True)
             return JsonResponse({"status" : "success", "code": "200"})
     except Exception as e:
         if DEBUG == True:
