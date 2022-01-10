@@ -1,6 +1,6 @@
-venv/
-bin/
-lib/
+venv/*
+bin/*
+lib/*
 pyvenv.cfg
-abaamet/
-lib64/
+abaamet/*
+lib64/*
