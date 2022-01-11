@@ -9,7 +9,8 @@ from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import PermissionRequiredMixin
 import pandas as pd
-import json
+from django.db import connection
+
 
 
 
@@ -179,18 +180,22 @@ class EmpresaDetailView (DetailView):
 def borrar(request, id_empresa):
     try:
         if(request.method) == 'POST':
-            data = request.POST
-            empresa_activa = data['active'][0]
+            data = request.POST._mutable
+            request.POST._mutable = True
+            val = data['active'][0]
+            empresa_activa = val
+            return JsonResponse({"type":type(empresa_activa)})
             if empresa_activa == 'false':
-                model = Empresa
-                model.objects.filter(id = id_empresa).update(empresa_activa = False)
+                with connection.cursor() as cursor:
+                    q = "UPDATE general_empresa SET empresa_activa = false WHERE id = " + str(id_empresa)
+                    cursor.execute(q)
+                return JsonResponse({"status" : "success", "code": "200"})
             else:
-                model = Empresa
-                model.objects.filter(id = id_empresa).update(empresa_activa = True)
-            return JsonResponse({"status" : "success", "code": "200"})
+                with connection.cursor() as cursor:
+                    q = "UPDATE general_empresa SET empresa_activa = true WHERE id = " + str(id_empresa)
+                    cursor.execute(q)
+                return JsonResponse({"status" : "success", "code": "200"})
     except Exception as e:
-        if DEBUG == True:
-            return e
-        else:
-            return JsonResponse({"status": "failed", "code": "500"})
+        data['error']= str(e)
+        return JsonResponse(data)
 

@@ -25,11 +25,11 @@ $(function() {
                 render: function(data, type, row) {
                     var buttons = '<a href="empresas/edit/' + row.id + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a href="empresas/detail/' + row.id + '/" type="button" class="btn btn-flat"><i class="fas fa-info-circle"></i></a> ';
-                    if(row.empresa_activa){
-                        buttons += '<button type="button" id="'+ row.id + '" class="btn btn-xs btn-flat delete"  alt="Activar registro"><i class="fas fa-toggle-on"></i></button>';
+                    if(row.empresa_activa == true || row.empresa_activa == 'true'){
+                        buttons += '<button type="button" id="'+ row.id + '" class="btn btn-xs btn-flat delete"  alt="Desactivar registro"><i class="fas fa-toggle-on"></i></button>';
                     }
                     else{
-                        buttons += '<button type="button" id="' + row.id + '" class="btn btn-xs btn-flat active" alt="Desactivar registro"><i class="fas fa-toggle-off"></i></button>';
+                        buttons += '<button type="button" id="' + row.id + '" class="btn btn-xs btn-flat active" alt="Activar registro"><i class="fas fa-toggle-off"></i></button>';
                         
                     }
                     return buttons;
@@ -142,10 +142,9 @@ $(document).on('click', ".active", function(e){
                 mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "active": false
+                    "active": true
                 },
                 success: function(request){
-                    data = JSON.parse(request);
                     Swal.fire({
                         title: 'Registro activado exitosamente',
                         icon: 'success',
