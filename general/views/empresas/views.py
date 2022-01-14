@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.checks.messages import DEBUG
 from django.http.response import JsonResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from general.models import Empresa, Sucursal, Direccion, Cliente
@@ -8,7 +9,8 @@ from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import PermissionRequiredMixin
 import pandas as pd
-import json
+from django.db import connection
+
 
 
 
@@ -118,6 +120,7 @@ class EmpresaUpdateView(LoginRequiredMixin, PermissionRequiredMixin ,UpdateView)
         context['action']='edit'
         return context
 
+
 class EmpresaDetailView (DetailView):
     model = Empresa
     template_name = "empresas/detail.html"
@@ -174,16 +177,25 @@ class EmpresaDetailView (DetailView):
 
 #Funcion para borrar logicamente
 
-def borrar(request):
-    if(request.method) == 'POST':
-        data = request.POST
-        Empresa.id = data['id'][0]
-        Empresa.empresa_activa = data['empresa_activa'][0]
-        status = Empresa.save
-        print(status)
-        exit()
-        if Empresa.save:
-            return JsonResponse({"status": "success"})
-        else:
-            return JsonResponse({"status": "failed"})
+def borrar(request, id_empresa):
+    try:
+        if(request.method) == 'POST':
+            data = request.POST._mutable
+            request.POST._mutable = True
+            val = data['active'][0]
+            empresa_activa = val
+            return JsonResponse({"type":type(empresa_activa)})
+            if empresa_activa == 'false':
+                with connection.cursor() as cursor:
+                    q = "UPDATE general_empresa SET empresa_activa = false WHERE id = " + str(id_empresa)
+                    cursor.execute(q)
+                return JsonResponse({"status" : "success", "code": "200"})
+            else:
+                with connection.cursor() as cursor:
+                    q = "UPDATE general_empresa SET empresa_activa = true WHERE id = " + str(id_empresa)
+                    cursor.execute(q)
+                return JsonResponse({"status" : "success", "code": "200"})
+    except Exception as e:
+        data['error']= str(e)
+        return JsonResponse(data)
 

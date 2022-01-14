@@ -25,11 +25,11 @@ $(function() {
                 render: function(data, type, row) {
                     var buttons = '<a href="empresas/edit/' + row.id + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a href="empresas/detail/' + row.id + '/" type="button" class="btn btn-flat"><i class="fas fa-info-circle"></i></a> ';
-                    if(row.empresa_activa){
-                        buttons += '<button type="button" id="'+ row.id + '" class="btn btn-xs btn-flat delete"  alt="Activar registro"><i class="fas fa-toggle-on"></i></button>';
+                    if(row.empresa_activa == true || row.empresa_activa == 'true'){
+                        buttons += '<button type="button" id="'+ row.id + '" class="btn btn-xs btn-flat delete"  alt="Desactivar registro"><i class="fas fa-toggle-on"></i></button>';
                     }
                     else{
-                        buttons += '<button type="button" id="' + row.id + '" class="btn btn-xs btn-flat active" alt="Desactivar registro"><i class="fas fa-toggle-off"></i></button>';
+                        buttons += '<button type="button" id="' + row.id + '" class="btn btn-xs btn-flat active" alt="Activar registro"><i class="fas fa-toggle-off"></i></button>';
                         
                     }
                     return buttons;
@@ -86,7 +86,6 @@ $(function() {
 $(document).on('click', ".delete", function(e){
     e.preventDefault();
     let val = $(this)[0].id;
-    console.log(val);
     let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     Swal.fire({
         title: '¿Está seguro de desactivar este registro?',
@@ -99,18 +98,24 @@ $(document).on('click', ".delete", function(e){
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
-                url:"empresas/borrar",
+                url:"empresas/borrar/"+val+"/",
                 headers: {'X-CSRFToken': csrftoken},
                 mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "id": val,
-                    "empresa_activa": false
+                    "active": false
                 },
-            }).then(function (request){
-                console.log(request);
-            }).catch(function(error){
-                console.log(error);
+                success: function(request){
+                    Swal.fire({
+                        title: 'Registro desactivado exitosamente',
+                        icon: 'success',
+                        showCancelButton: false,
+                    }).then( (response) => {
+                        if(response.isConfirmed){
+                            location.reload()
+                        }
+                    });
+                }
             });
         }
     });
@@ -120,7 +125,6 @@ $(document).on('click', ".delete", function(e){
 $(document).on('click', ".active", function(e){
     e.preventDefault();
     let val = $(this)[0].id;
-    console.log(val);
     let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     Swal.fire({
         title: '¿Está seguro de activar este registro?',
@@ -133,18 +137,24 @@ $(document).on('click', ".active", function(e){
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
-                url:"empresas/borrar",
+                url:"empresas/borrar/"+val+"/",
                 headers: {'X-CSRFToken': csrftoken},
                 mode: 'same-origin',
                 method: 'POST',
                 data : {
-                    "id": val,
-                    "empresa_activa": true
+                    "active": true
                 },
-            }).then(function (request){
-                console.log(request);
-            }).catch(function(error){
-                console.log(error);
+                success: function(request){
+                    Swal.fire({
+                        title: 'Registro activado exitosamente',
+                        icon: 'success',
+                        showCancelButton: false,
+                    }).then( (response) => {
+                        if(response.isConfirmed){
+                            location.reload()
+                        }
+                    });
+                }
             });
         }
     });
