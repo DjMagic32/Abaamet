@@ -180,12 +180,9 @@ class EmpresaDetailView (DetailView):
 def borrar(request, id_empresa):
     try:
         if(request.method) == 'POST':
-            data = request.POST._mutable
-            request.POST._mutable = True
-            val = data['active'][0]
-            empresa_activa = val
-            return JsonResponse({"type":type(empresa_activa)})
-            if empresa_activa == 'false':
+            data = request.POST
+            val = data['active']
+            if val == 'false':
                 with connection.cursor() as cursor:
                     q = "UPDATE general_empresa SET empresa_activa = false WHERE id = " + str(id_empresa)
                     cursor.execute(q)
