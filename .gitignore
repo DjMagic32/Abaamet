@@ -1,7 +1,12 @@
-venv/
-bin/
-lib/
+venv/*
+bin/*
+lib/*
 pyvenv.cfg
+<<<<<<< HEAD
 abaamet/
 lib64/
 *.pyc
+=======
+abaamet/*
+lib64/*
+>>>>>>> d7b5b97bb8a4ce1081b9f526c909c0acb6defbfe
