@@ -206,11 +206,11 @@ class EmpresaForm(ModelForm):
         super().__init__(*args, **kwargs)
         for form in self.visible_fields():
             form.field.widget.attrs["class"] = "form-control"
-        self.fields["razon_social"].widget.attrs[
+        self.fields["nombre_empresa"].widget.attrs[
             "placeholder"
         ] = "Ingrese el nombre de la empresa"
-        self.fields["razon_social"].widget.attrs["cols"] = 3
-        self.fields["razon_social"].widget.attrs["rows"] = 3
+        self.fields["nombre_empresa"].widget.attrs["cols"] = 3
+        self.fields["nombre_empresa"].widget.attrs["rows"] = 3
 
     def save(self, commit=True):
         data = {}
@@ -227,4 +227,3 @@ class EmpresaForm(ModelForm):
     class Meta:
         model = Empresa
         fields = "__all__"
-        labels = {"razon_social": "Razon social"}

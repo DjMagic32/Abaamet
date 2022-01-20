@@ -42,8 +42,8 @@ class Sucursal(models.Model):
     id= models.AutoField(primary_key=True)
     nombre_sucursal = models.CharField(null=True, max_length=50,verbose_name='Sucursal')
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC')
-    id_direccion= models.ForeignKey(Direccion,null=True, blank=True, on_delete= DO_NOTHING,verbose_name='dirección')
-    id_empresa = models.ForeignKey(Empresa, null=True, blank=True, on_delete=DO_NOTHING, verbose_name='Empresa')
+    id_direccion= models.ForeignKey(Direccion,null=True, blank=False, on_delete= DO_NOTHING,verbose_name='dirección')
+    id_empresa = models.ForeignKey(Empresa, null=True, blank=False, on_delete=DO_NOTHING, verbose_name='Empresa')
     def __str__(self):
         return self.nombre_sucursal
     def toJSON(self):

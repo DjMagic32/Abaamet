@@ -28,7 +28,7 @@ class EmpresaListView(LoginRequiredMixin, PermissionRequiredMixin ,  ListView):
             action= request.POST['action']
             if action == 'searchdata':
                 data=[]
-                for i in Empresa.objects.all():
+                for i in Empresa.objects.filter(empresa_activa = 'True'):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
