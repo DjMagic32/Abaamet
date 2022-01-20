@@ -51,6 +51,49 @@ class RecepcionListView(LoginRequiredMixin, PermissionRequiredMixin ,ListView):
         context['entity']= 'Recepcion'
         return context
 
+#Clase para los productos aprobados
+class RecepcionListApprobedView(LoginRequiredMixin, PermissionRequiredMixin ,ListView):
+        model = Recepcion
+        permission_required = 'general.view_recepcion'
+        permission_denied_message = 'No esta autorizado.'
+        template_name='recepcion/recepcion.html'
+
+        @method_decorator(csrf_exempt)
+        def dispatch(self, request, *args, **kwargs):
+            return super().dispatch(request, *args, **kwargs)
+
+        def post(self, request, *args, **kwargs):
+            data={}
+            try:
+                action= request.POST['action']
+                if action == 'searchdata':
+                    data=[]
+                    recepcion = Recepcion.objects.filter(estatus= 'Aprobado')
+                    for i in recepcion:
+                        data.append(i.toJSON())
+                else:
+                    data['error'] = 'Ha ocurrido un error'
+            except Exception as e:
+                data['error']=str(e)
+            return JsonResponse(data, safe=False)
+
+        
+        def get_context_data(self, **kwargs):
+            context= super().get_context_data(**kwargs)
+            context['title']='Lista de aprobados'
+            context['create_url']= reverse_lazy('general:RecepcionListAprobedViewpath')
+            context['list_url_cli']= reverse_lazy('general:ClienteListViewpath')
+            context['list_url_dir']= reverse_lazy('general:DireccionesListViewpath')
+            context['list_url_emp']= reverse_lazy('general:EmpresaListViewpath')
+            context['list_url_prod']= reverse_lazy('general:ProductoListViewpath')
+            context['list_url_ingre']= reverse_lazy('general:IngresoListViewpath')
+            context['list_url_serv']= reverse_lazy('general:ServicioListViewpath')
+            context['list_url_recep']= reverse_lazy('general:RecepcionListViewpath')
+            context['list_url_recepaprob'] = reverse_lazy('general:RecepcionListAprobedViewpath')
+            context['entity']= 'Recepciones Aprobados'
+            return context
+
+
 class RecepcionCreateView(LoginRequiredMixin, PermissionRequiredMixin ,CreateView):
     model=Recepcion
     form_class= RecepcionForm
