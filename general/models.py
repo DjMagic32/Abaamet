@@ -7,7 +7,18 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
-
+class Empresa(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
+    nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
+    numero_cliente = models.CharField(max_length=50,verbose_name='Numero de Cliente')
+    empresa_activa = models.BooleanField(verbose_name="activa") 
+    rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
+    def __str__(self):
+        return self.nombre_empresa
+    def toJSON(self):
+        item= model_to_dict(self)
+        return item
 class Direccion(models.Model):
     id = models.AutoField(primary_key=True)
     num_interior= models.CharField(max_length=80, null=True,verbose_name='Número Interior')
@@ -20,26 +31,12 @@ class Direccion(models.Model):
     estado= models.CharField(max_length=20, null=True,verbose_name='Estado')
     municipio= models.CharField(max_length=20, null=True,verbose_name='Municipio')
     codigo_postal= models.PositiveIntegerField(null=False,verbose_name='Código postal')
+    id_empresa = models.ForeignKey(Empresa, null=True, blank=True, on_delete=DO_NOTHING, verbose_name='Empresa')
     def __str__(self):
         return self.localidad
     def toJSON(self):
         item= model_to_dict(self)
         return item
-
-class Empresa(models.Model):
-    id = models.AutoField(primary_key=True)
-    nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
-    email= models.EmailField(max_length=254,verbose_name='Email', null=True, blank=True)
-    nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
-    phone = models.CharField(max_length=12,null=True,verbose_name='Teléfono')
-    razon_social = models.CharField(max_length=50,verbose_name='Razón social')
-    numero_cliente = models.CharField(max_length=50,verbose_name='Número de Cliente') 
-    def __str__(self):
-        return self.nombre_empresa
-    def toJSON(self):
-        item= model_to_dict(self)
-        return item
-
 
 class Sucursal(models.Model):
     id= models.AutoField(primary_key=True)

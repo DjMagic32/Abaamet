@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import PermissionRequiredMixin
 import pandas as pd
 import json
-
+from django.db import connection
 
 
 class EmpresaListView(LoginRequiredMixin, PermissionRequiredMixin ,  ListView):
@@ -167,3 +167,25 @@ class EmpresaDetailView (DetailView):
         print (sucursales_values)
 
         return context
+
+
+#Funcion para borrar logicamente
+
+def borrar(request, id_empresa):
+    try:
+        if(request.method) == 'POST':
+            data = request.POST
+            val = data['active']
+            if val == 'false':
+                with connection.cursor() as cursor:
+                    q = "UPDATE general_empresa SET empresa_activa = false WHERE id = " + str(id_empresa)
+                    cursor.execute(q)
+                return JsonResponse({"status" : "success", "code": "200"})
+            else:
+                with connection.cursor() as cursor:
+                    q = "UPDATE general_empresa SET empresa_activa = true WHERE id = " + str(id_empresa)
+                    cursor.execute(q)
+                return JsonResponse({"status" : "success", "code": "200"})
+    except Exception as e:
+        data['error']= str(e)
+        return JsonResponse(data)
