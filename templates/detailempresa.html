@@ -22,7 +22,8 @@
           </ul>
     </div>
     <div class="card-body">
-        <h3>Sucursales</h3>
+        <h3>Detalles de {{empresa}}</h3>
+        <h6>Numero de Cliente: {{empresa.num_client}}</h6>
         <table class="table" id="datatable">
             {% csrf_token %}
             <thead>

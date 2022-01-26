@@ -1,8 +1,12 @@
+from itertools import count
+from pickle import FALSE
+from re import T
 from django.db import models
 from django.db.models.deletion import DO_NOTHING
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.contrib.auth.models import User
+import collections
 
 
 
@@ -11,14 +15,34 @@ class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
     nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
     nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
-    numero_cliente = models.CharField(max_length=50,verbose_name='Numero de Cliente')
-    empresa_activa = models.BooleanField(verbose_name="activa") 
+    numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente')
+    empresa_activa = models.BooleanField(default=True, null=True, verbose_name="activa") 
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
+    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente')
+
+    @property
+    def numero_cliente(self):
+        list_empresas= len(Empresa.objects.all())
+        list_empresas_format = str(list_empresas+1)
+        n_client = list_empresas_format.zfill(3)
+        return n_client
+    @numero_cliente.setter
+    def numero_cliente(self, value):
+        self.numero_cliente = value
+
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.num_client = str(self.nombre_empresa[0]) + '-' + str(self.numero_cliente)
+        return super(Empresa, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.nombre_empresa
     def toJSON(self):
         item= model_to_dict(self)
         return item
+    
+    
 class Direccion(models.Model):
     id = models.AutoField(primary_key=True)
     num_interior= models.CharField(max_length=80, null=True,verbose_name='Número Interior')
@@ -44,6 +68,29 @@ class Sucursal(models.Model):
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC')
     id_direccion= models.ForeignKey(Direccion,null=True, blank=False, on_delete= DO_NOTHING,verbose_name='dirección')
     id_empresa = models.ForeignKey(Empresa, null=True, blank=False, on_delete=DO_NOTHING, verbose_name='Empresa')
+    slug  = models.SlugField(blank=True, null=True)
+    contador_sucursales = models.CharField(max_length=50, verbose_name='Numero de Cliente')
+
+    @property
+    def contador_sucursales(self):
+        exist_slug = Sucursal.objects.filter(id_empresa__id = self.id_empresa.id)
+
+        return len(exist_slug)
+
+    @contador_sucursales.setter
+    def contador_sucursales(self, value):
+        self.contador_sucursales = value
+
+    def save(self, *args, **kwargs, ):
+        x = 0
+        if not self.id:
+            sucursals_verify = Sucursal.objects.filter(id_empresa__id = self.id_empresa.id)
+            var = int(self.contador_sucursales) + 1
+            self.slug = str(self.id_empresa.num_client) + '-' + str(var)
+
+        return super(Sucursal, self).save(*args, **kwargs)
+
+
     def __str__(self):
         return self.nombre_sucursal
     def toJSON(self):
