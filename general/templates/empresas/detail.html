@@ -2,6 +2,7 @@
 <script src="{% static 'Empresas\js\detail.js' %}"></script>{% endblock head_list %} {% block columns %}
 
 <table id="table_ejemploList" class="table table-striped table-bordered">
+  {% if sucursales_s %}
     <thead>
         <tr bgcolor="#bee5eb">
             <th class="text-center" width="20%">SUCURSAL</th>
@@ -9,14 +10,25 @@
             <th class="text-center" width="20%">CLIENTES</th>
         </tr>
     </thead>
+    
     {% for e in sucursales_s %}
       <tr>
-        <td class="tb_desc">{{e.nombre_sucursal}}</td>
-        <td class="tb_desc">País: &nbsp{{e.id_direccion.pais}}&nbsp , Estado: &nbsp{{e.id_direccion.estado}}&nbsp , Municipio: &nbsp{{e.id_direccion.municipio}}&nbsp , Localidad: &nbsp{{e.id_direccion.localidad}}&nbsp ,  Calle: &nbsp{{e.id_direccion.calle}}&nbsp , Colonia: &nbsp{{e.id_direccion.colonia}}&nbsp , N.Ext: &nbsp{{e.id_direccion.num_exterior}}&nbsp , N.Int: &nbsp{{e.id_direccion.num_interior}}&nbsp , Cod.Postal: &nbsp{{e.id_direccion.codigo_postal}}&nbsp , Referencia: &nbsp{{e.id_direccion.referencia}}&nbsp</td>
+        <td class="tb_desc">{{e.nombre_sucursal}} <a href="/general/principal/sucursals/edit/{{e.id}}/"><button type="button" class="btn">
+          <i class="fas fa-edit"></i>
+        </button></a>
+        </td>
+        <td class="tb_desc">País: &nbsp{{e.id_direccion.pais}}&nbsp , Estado: &nbsp{{e.id_direccion.estado}}&nbsp , Municipio: &nbsp{{e.id_direccion.municipio}}&nbsp , Localidad: &nbsp{{e.id_direccion.localidad}}&nbsp ,  Calle: &nbsp{{e.id_direccion.calle}}&nbsp , Colonia: &nbsp{{e.id_direccion.colonia}}&nbsp , N.Ext: &nbsp{{e.id_direccion.num_exterior}}&nbsp , N.Int: &nbsp{{e.id_direccion.num_interior}}&nbsp , Cod.Postal: &nbsp{{e.id_direccion.codigo_postal}}&nbsp , Referencia: &nbsp{{e.id_direccion.referencia}}&nbsp
+          {% if e.id_direccion.id %}
+          <a href="/general/principal/direcciones/edit/{{e.id_direccion.id}}/"><button type="button" class="btn">
+            <i class="fas fa-edit"></i>
+          </button></a>
+          {% endif %}
+        </td>
         <td class="tb_desc"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{e.id}}">
           DETALLES
         </button></td>
-        <!-- Modal -->
+        <tr>
+        <!-- Modal con sucursales -->
         <div class="modal fade" id="exampleModal-{{e.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -30,10 +42,13 @@
                 <div class="list-group">
                   {% for n in clientes_s %}
                   {% if n.sucursal_id.id == e.id %}
-                  <a href="#" class="list-group-item list-group-item-action" aria-current="true">
                     <div class="d-flex w-100 justify-content-between">
                       <h5 class="mb-1">{{n.nombre_completo}}</h5>
-                      <small>{{n.sucursal_id.id}} , {{e.id}}</small>
+                      <small>{% if n.id %}
+                        <a href="/general/principal/clientes/edit/{{n.id}}/"><button type="button" class="btn">
+                          <i class="fas fa-edit"></i>
+                        </button></a>
+                        {% endif %}</small>
                     </div>
                     <p class="mb-1">Teléfonos: {{n.telefono}} / {{n.telefono_ad}} </p>
                     <small>Correo Electrónico: {{n.email}}</small>
@@ -53,6 +68,66 @@
 
         
     {% endfor %}
+    {% else %}
+    <thead>
+      <tr bgcolor="#bee5eb">
+          <th class="text-center" width="70%">DIRECCIÓN</th>
+          <th class="text-center" width="20%">CLIENTES</th>
+      </tr>
+  </thead>
+  {% for direc in direciones_filter %}
+    <tr>
+      <td class="tb_desc">País: &nbsp{{direc.pais}}&nbsp , Estado: &nbsp{{direc.estado}}&nbsp , Municipio: &nbsp{{direc.municipio}}&nbsp , Localidad: &nbsp{{direc.localidad}}&nbsp ,  Calle: &nbsp{{direc.calle}}&nbsp , Colonia: &nbsp{{direc.colonia}}&nbsp , N.Ext: &nbsp{{direc.num_exterior}}&nbsp , N.Int: &nbsp{{direc.num_interior}}&nbsp , Cod.Postal: &nbsp{{direc.codigo_postal}}&nbsp , Referencia: &nbsp{{direc.referencia}}&nbsp
+        {% if direc.id %}
+          <a href="/general/principal/direcciones/edit/{{direc.id}}/"><button type="button" class="btn">
+            <i class="fas fa-edit"></i>
+          </button></a>
+          {% endif %}
+      </td>
+      <td class="tb_desc"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{e.id}}">
+        DETALLES
+      </button></td>
+    <tr>
+    <!-- Modal con sucursales -->
+    <div class="modal fade" id="exampleModal-{{e.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Clientes</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="list-group">
+              {% for client in clientes_s %}
+              {% if direc.id_empresa.id == client.id_empresa.id %}
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{client.nombre_completo}}</h5>
+                  <small>{% if client.id %}
+                    <a href="/general/principal/clientes/edit/{{client.id}}/"><button type="button" class="btn">
+                      <i class="fas fa-edit"></i>
+                    </button></a>
+                    {% endif %}</small>
+                </div>
+                <p class="mb-1">Teléfonos: {{client.telefono}} / {{client.telefono_ad}} </p>
+                <small>Correo Electrónico: {{client.email}}</small>
+              </a>
+              {% else %}
+              <h4>No hay clientes registrados</h4>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+    {% endif %}
     
 </table>
 
