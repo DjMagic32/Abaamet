@@ -1,7 +1,7 @@
 from django.urls import path
 from .views.forbidden.views import ForbiddenView
 from .views.recepcion.views import RecepcionUpdateView
-from .views.recepcion.views import RecepcionCreateView, RecepcionListView
+from .views.recepcion.views import RecepcionCreateView, RecepcionListView, RecepcionListApprobedView
 from .views.empresas.views import *
 from .views.direcciones.views import *
 from .views.clientes.views import *
@@ -43,8 +43,10 @@ urlpatterns = [
    path('principal/empresas/borrar/<int:id_empresa>/', borrar, name="EmpresaDeleteViewpath"),
 
    path('principal/recepcion', RecepcionListView.as_view(), name='RecepcionListViewpath'),
+   path('principal/recepcion/aprobados', RecepcionListApprobedView.as_view(), name="RecepcionListAprobedViewpath"),
    path('principal/recepcion/create/', RecepcionCreateView.as_view(), name='RecepcionCreateViewpath'),
    path('principal/recepcion/edit/<int:pk>/', RecepcionUpdateView.as_view(), name='RecepcionUpdateViewpath'),
+
 
    path('principal/ingreso', IngresoListView.as_view(), name='IngresoListViewpath'),
 ]

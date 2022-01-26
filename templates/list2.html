@@ -1,0 +1,32 @@
+{% extends 'body.html' %} {% load static %} {% block head %}
+<link rel="stylesheet" href="{% static 'lib\Datatable\DataTables-1.11.2\css\dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib\Datatable\Plugins\Responsive-2.2.9\css\responsive.bootstrap4.min.css' %}">
+<script src="{% static 'lib\Datatable\DataTables-1.11.2\js\jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib\Datatable\DataTables-1.11.2\js\dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib\Datatable\Plugins\Responsive-2.2.9\js\dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib\Datatable\Plugins\Responsive-2.2.9\js\responsive.bootstrap4.min.js' %}"></script>
+
+{% block head_list %} {% endblock head_list %} {% endblock head %} {% block content %}
+<div class="card card-default p-3 m-3">
+    <div class="card-header">
+        <h1 class="card-title">
+            {{ title }} / {{date_now}} / {{ user }}
+        </h1>
+    </div>
+    <div class="card-body">
+        <table class="table" id="datatable">
+            {% csrf_token %}
+            <thead>
+                {% block columns %} {% endblock columns %}
+            </thead>
+            <tbody>
+                {% block rows %} {% endblock rows %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock content %} {% block javascript %}
+<script src="{% static 'js/functions.js' %}"></script>
+
+{% endblock javascript %}
