@@ -140,11 +140,8 @@ class EmpresaDetailView (DetailView):
         sucursales_s = Sucursal.objects.filter(id_empresa_id = self.object.id)
         clientes_s = Cliente.objects.filter(id_empresa_id = self.object.id)
         direciones_s = Direccion.objects.all()
+        direciones_filter = Direccion.objects.filter(id_empresa = self.object.id)
         sucursales_values = Sucursal.objects.filter(id_empresa_id = self.object.id).values()
-
-        print (sucursales_s)
-        print (clientes_s)
-        print (direciones_s)
         
         context['title']= 'Detalles de Empresa'
         context['entity']= 'Empresas'
@@ -164,7 +161,8 @@ class EmpresaDetailView (DetailView):
         context['direciones_s'] = direciones_s
         context['sucursales_values'] = sucursales_values
         context['clientes_s'] = clientes_s
-        print (sucursales_values)
+        context['empresa'] = self.object
+        context['direciones_filter'] = direciones_filter 
 
         return context
 
