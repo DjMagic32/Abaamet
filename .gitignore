@@ -127,3 +127,22 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+bin/
+bin/activate
+bin/activate_this.py
+bin/activate.csh
+bin/activate.fish
+bin/django-admin
+bin/f2py
+bin/f2py3
+bin/f2py3.8
+bin/pip
+bin/pip3
+bin/pip3.8
+bin/python
+bin/python-config
+bin/python3
+bin/python3.8
+bin/sqlformat
+bin/wheel
