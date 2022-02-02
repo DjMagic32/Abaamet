@@ -221,7 +221,7 @@ class Recepcion(models.Model):
     fecha_de_recepcion = models.DateField(verbose_name='Fecha de recepción',null=True)
     modo=models.CharField(choices=modoChoices,max_length=15)
     cliente= models.ForeignKey(Cliente,verbose_name='cliente',on_delete= DO_NOTHING)
-    estatus= models.CharField(choices=estatusChoices, max_length=15)
+    estatus= models.CharField(choices=estatusChoices, default="Pendiente", max_length=15)
     orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra')
     n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización')
     
