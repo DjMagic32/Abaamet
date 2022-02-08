@@ -15,12 +15,12 @@ class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
     nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
     nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
-    numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente')
+    numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente', editable = False)
     empresa_activa = models.BooleanField(default=True, null=True, verbose_name="activa") 
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
-    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente')
+    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente', editable = False)
 
-    @property
+    @property   
     def numero_cliente(self):
         list_empresas= len(Empresa.objects.all())
         list_empresas_format = str(list_empresas+1)
@@ -68,8 +68,8 @@ class Sucursal(models.Model):
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC')
     id_direccion= models.ForeignKey(Direccion,null=True, blank=False, on_delete= DO_NOTHING,verbose_name='dirección')
     id_empresa = models.ForeignKey(Empresa, null=True, blank=False, on_delete=DO_NOTHING, verbose_name='Empresa')
-    slug  = models.SlugField(blank=True, null=True)
-    contador_sucursales = models.CharField(max_length=50, verbose_name='Numero de Cliente')
+    slug  = models.SlugField(blank=True, null=True, verbose_name='Numero de Cliente', editable=False)
+    contador_sucursales = models.CharField(max_length=50, verbose_name='Numero de Cliente', editable=False)
 
     @property
     def contador_sucursales(self):
@@ -213,17 +213,17 @@ class Recepcion(models.Model):
 
     n_entrada = models.AutoField(primary_key=True,verbose_name='Número de entrada')
     nombre = models.CharField(max_length=50,verbose_name='Nombre')
-    marca = models.CharField(max_length=50,verbose_name='Marca')
-    modelo = models.CharField(max_length=50,verbose_name='Modelo')
-    serie = models.CharField( verbose_name='Detalle',max_length=15)
-    identificacion= models.CharField(verbose_name='Identificación',max_length=10)
-    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25)
+    marca = models.CharField(max_length=50,verbose_name='Marca', blank=True , null= True)
+    modelo = models.CharField(max_length=50,verbose_name='Modelo', blank=True , null= True)
+    serie = models.CharField( verbose_name='Detalle',max_length=15, blank=True , null= True)
+    identificacion= models.CharField(verbose_name='Identificación',max_length=10, blank=True , null= True)
+    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25, blank=True , null= True)
     fecha_de_recepcion = models.DateField(verbose_name='Fecha de recepción',null=True)
-    modo=models.CharField(choices=modoChoices,max_length=15)
+    modo=models.CharField(choices=modoChoices,max_length=15, blank=True , null= True)
     cliente= models.ForeignKey(Cliente,verbose_name='cliente',on_delete= DO_NOTHING)
-    estatus= models.CharField(choices=estatusChoices, default="Pendiente", max_length=15)
-    orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra')
-    n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización')
+    estatus= models.CharField(choices=estatusChoices, default="Pendiente", max_length=15, blank=True , null= True)
+    orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra', blank=True , null= True)
+    n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización', blank=True , null= True)
     
 
     def save(self, *args,**kwargs):
