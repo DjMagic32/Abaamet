@@ -54,7 +54,7 @@ class Empresa(models.Model):
     numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente', editable = False)
     empresa_activa = models.BooleanField(default=True, null=True, verbose_name="activa") 
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
-    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente',)
+    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente', editable=False)
 
     @property   
     def numero_cliente(self):
