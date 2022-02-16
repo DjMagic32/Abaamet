@@ -15,8 +15,6 @@ class RecepcionForm(ModelForm):
         self.fields["serie"].widget.attrs["placeholder"] = "Serie"
         self.fields["identificacion"].widget.attrs["placeholder"] = "identificacion"
         self.fields["descripcion_particular"].widget.attrs["placeholder"] = "Descripcion"
-        self.fields["fecha_de_recepcion"].required = False
-        self.fields["fecha_de_recepcion"].widget = forms.HiddenInput()
         self.fields["modo"].widget.attrs["placeholder"] = "Indique el modo"
         self.fields["cliente"].widget.attrs["placeholder"] = "Indique Cliente"
         self.fields["estatus"].widget.attrs["placeholder"] = "Estatus"
@@ -40,7 +38,7 @@ class RecepcionForm(ModelForm):
     class Meta:
         model = Recepcion
         fields = "__all__"
-        labels = {"Numero de entrada": "n_entrada", "nombre": "Nombre","marca": "Marca","modelo": "Modelo", "serie": "Serie", "identificacion": "Identificacion", "descripcion_particular": "Descripcion", "modo": "Modo", "cliente": "Cliente","estatus":"Estatus","orden_compra":"Orden de Compra","n_cotizacion":"Numero de cotizacion"}
+        labels = {"nombre": "Nombre","marca": "Marca","modelo": "Modelo", "serie": "Serie", "identificacion": "Identificacion", "descripcion_particular": "Descripcion", "modo": "Modo", "cliente": "Cliente","estatus":"Estatus","orden_compra":"Orden de Compra","n_cotizacion":"Numero de cotizacion"}
 
 """ FORMULARIO SUCURSAL NUEVO """
 class SucursalForm(ModelForm):

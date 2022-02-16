@@ -12,7 +12,7 @@ class SucursalAdmin (admin.ModelAdmin):
 
 class RecepcionAdmin (admin.ModelAdmin):
     model =  Recepcion
-    list_display = ( "nombre", "n_entrada")
+    list_display = ( "nombre", "n_entrada","fecha_de_recepcion")
 
 admin.site.register(Sucursal, SucursalAdmin),
 admin.site.register(Cliente),

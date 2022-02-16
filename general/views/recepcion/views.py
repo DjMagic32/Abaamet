@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth. mixins import PermissionRequiredMixin
+import json
 
 
 
@@ -28,12 +29,17 @@ class RecepcionListView(LoginRequiredMixin, PermissionRequiredMixin ,ListView):
             if action == 'searchdata':
                 data=[]
                 recepcion = Recepcion.objects.filter(estatus= 'Pendiente')
-                for i in recepcion:
-                    data.append(i.toJSON())
+                recepcion2 = Recepcion.objects.filter(estatus= 'Pendiente').values()
+                for n in recepcion2:
+                    print ("ESTO ES N OJOOO",n)
+                    data.append(n)
+                print (data)
+
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error']=str(e)
+        
         return JsonResponse(data, safe=False)
 
     
@@ -71,12 +77,14 @@ class RecepcionListApprobedView(LoginRequiredMixin, PermissionRequiredMixin ,Lis
                     recepcion = Recepcion.objects.filter(estatus= 'Aprobado')
                     for i in recepcion:
                         data.append(i.toJSON())
+                        print (data)
                 else:
                     data['error'] = 'Ha ocurrido un error'
             except Exception as e:
                 data['error']=str(e)
+            
             return JsonResponse(data, safe=False)
-
+            
         
         def get_context_data(self, **kwargs):
             context= super().get_context_data(**kwargs)

@@ -54,14 +54,26 @@ class Empresa(models.Model):
     numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente', editable = False)
     empresa_activa = models.BooleanField(default=True, null=True, verbose_name="activa") 
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
-    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente', editable = False)
+    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente',)
 
     @property   
     def numero_cliente(self):
-        list_empresas= len(Empresa.objects.all())
-        list_empresas_format = str(list_empresas+1)
-        n_client = list_empresas_format.zfill(3)
-        return n_client
+        check = str(self.nombre_empresa[0]).upper()
+        empresa_filtro = list(Empresa.objects.filter(num_client__startswith = check).values_list('num_client', flat=True))
+
+        if len(empresa_filtro) == 0:
+            print ("no existe y es none")
+            y = len(empresa_filtro) + 1
+            y = str(y).zfill(3)
+        else:
+            print ("Se ejecuto el 'else'")
+            x = empresa_filtro[-1]
+            y = int(x[-1])
+            y += 1
+            y = str(y).zfill(3)
+
+        return y
+
     @numero_cliente.setter
     def numero_cliente(self, value):
         self.numero_cliente = value

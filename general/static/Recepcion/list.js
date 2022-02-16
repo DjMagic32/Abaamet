@@ -11,6 +11,7 @@ $(function() {
             dataSrc: ""
         },
         columns: [
+            { "data": "id" },
             { "data": "n_entrada" },
             { "data": "nombre" },
             { "data": "marca" },
@@ -127,7 +128,7 @@ $(function() {
                 class: 'text-center',
                 orderable: false,
                 render: function(data, type, row) {
-                    var buttons = '<a href="recepcion/edit/' + row.n_entrada + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                    var buttons = '<a href="recepcion/edit/' + row.id + '/" type="button" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     return buttons;
                 }
             },
