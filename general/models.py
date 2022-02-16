@@ -47,6 +47,26 @@ class EstadosMexico(models.TextChoices):
     zacatecas = "Zacatecas"
 
 # Create your models here.
+      
+class Direccion(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    num_interior= models.CharField(max_length=80, verbose_name='Número Interior', blank=True , null= True )
+    num_exterior= models.CharField(max_length=80, verbose_name='Número Exterior', blank=True , null= True )
+    calle= models.CharField(max_length=50, verbose_name='Calle', blank=True , null= True )
+    colonia= models.CharField(max_length=20, verbose_name='Colonia', blank=True , null= True )
+    pais= models.CharField(max_length=15, verbose_name='Pais')
+    referencia= models.CharField(max_length=254, verbose_name='Referencia', blank=True , null= True )
+    localidad= models.CharField(max_length=30, verbose_name='Localidad', blank=True , null= True )
+    estado= models.CharField(choices=EstadosMexico.choices , max_length=30, blank=True , null= True , verbose_name='Estado')
+    municipio= models.CharField(max_length=20, verbose_name='Municipio', blank=True , null= True )
+    codigo_postal= models.PositiveIntegerField(verbose_name='Código postal', blank=True , null= True )
+    #id_empresa = models.ForeignKey(Empresa, on_delete=DO_NOTHING, verbose_name='Empresa')
+    def __str__(self):
+        return self.localidad
+    def toJSON(self):
+        item= model_to_dict(self)
+        return item
 class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
     nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
@@ -55,6 +75,11 @@ class Empresa(models.Model):
     empresa_activa = models.BooleanField(default=True, null=True, verbose_name="activa") 
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
     num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente', editable = False)
+    direccion = models.ForeignKey(
+        Direccion,
+        on_delete = models.DO_NOTHING
+    )
+
 
     @property   
     def numero_cliente(self):
@@ -74,27 +99,6 @@ class Empresa(models.Model):
 
     def __str__(self):
         return self.nombre_empresa
-    def toJSON(self):
-        item= model_to_dict(self)
-        return item
-    
-    
-class Direccion(models.Model):
-
-    id = models.AutoField(primary_key=True)
-    num_interior= models.CharField(max_length=80, verbose_name='Número Interior', blank=True , null= True )
-    num_exterior= models.CharField(max_length=80, verbose_name='Número Exterior', blank=True , null= True )
-    calle= models.CharField(max_length=50, verbose_name='Calle', blank=True , null= True )
-    colonia= models.CharField(max_length=20, verbose_name='Colonia', blank=True , null= True )
-    pais= models.CharField(max_length=15, verbose_name='Pais')
-    referencia= models.CharField(max_length=254, verbose_name='Referencia', blank=True , null= True )
-    localidad= models.CharField(max_length=30, verbose_name='Localidad', blank=True , null= True )
-    estado= models.CharField(choices=EstadosMexico.choices , max_length=30, blank=True , null= True , verbose_name='Estado')
-    municipio= models.CharField(max_length=20, verbose_name='Municipio', blank=True , null= True )
-    codigo_postal= models.PositiveIntegerField(verbose_name='Código postal', blank=True , null= True )
-    id_empresa = models.ForeignKey(Empresa, on_delete=DO_NOTHING, verbose_name='Empresa')
-    def __str__(self):
-        return self.localidad
     def toJSON(self):
         item= model_to_dict(self)
         return item
@@ -132,7 +136,6 @@ class Sucursal(models.Model):
     def toJSON(self):
         item= model_to_dict(self)
         return item
-
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
@@ -285,7 +288,7 @@ class Recepcion(models.Model):
 class RecepcionDetalle(models.Model):
     n_entrada = models.ForeignKey(
         Recepcion,
-        on_delete = model.DO_NOTHING
+        on_delete = models.DO_NOTHING
     )
     nombre = models.CharField(max_length=50,verbose_name='Nombre')
     marca = models.CharField(max_length=50,verbose_name='Marca', blank=True , null= True)
