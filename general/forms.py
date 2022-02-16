@@ -211,6 +211,8 @@ class EmpresaForm(ModelForm):
         ] = "Ingrese el nombre de la empresa"
         self.fields["nombre_empresa"].widget.attrs["cols"] = 3
         self.fields["nombre_empresa"].widget.attrs["rows"] = 3
+        #self.fields["num_client"].widget.attrs["disabled"] = "true"
+        #self.fields["num_client "].widget.attrs["hidden"] = "true"
 
     def save(self, commit=True):
         data = {}
@@ -226,4 +228,4 @@ class EmpresaForm(ModelForm):
 
     class Meta:
         model = Empresa
-        fields = "__all__"
+        fields = ['nombre_empresa', 'nombre', 'rfc']

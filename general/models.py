@@ -7,20 +7,56 @@ from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.contrib.auth.models import User
 import collections
+from datetime import date
+from datetime import datetime
 
 
+class EstadosMexico(models.TextChoices):
+
+    aguascalientes ="Aguascalientes"
+    baja_California ="Baja California"
+    baja_California_Sur = "Baja California Sur"
+    campeche = "Campeche"
+    coahuila = "Coahuila"
+    colima = "Colima"
+    chiapas = "Chiapas"
+    chihuahua = "Chihuahua"
+    ciudad_de_Mexico = "Ciudad de Mexico"
+    durango = "Durango"
+    guanajuato = "Guanajuato"
+    guerrero = "Guerrero"
+    hidalgo = "Hidalgo"
+    jalisco = "Jalisco"
+    estado_de_Mexico = "Estado de Mexico"
+    michoacan = "Michoacan"
+    morelos = "Morelos"
+    nayarit = "Nayarit"
+    nuevo_Leon = "Nuevo Leon"
+    oaxaca = "Oaxaca"
+    puebla = "Puebla"
+    queretaro = "Queretaro"
+    quintana_Roo = "Quintana Roo"
+    san_Luis_Potosi ="San Luis Potosi"
+    sinaloa ="Sinaloa"
+    sonora = "Sonora"
+    tabasco = "Tabasco"
+    tamaulipas = "Tamaulipas"
+    tlaxcala = "Tlaxcala"
+    veracruz = "Veracruz"
+    yucatan = "Yucatan"
+    zacatecas = "Zacatecas"
 
 # Create your models here.
 class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
     nombre_empresa = models.CharField(max_length=150,verbose_name='Nombre de Empresa', null=True, blank=True)
     nombre = models.CharField(max_length=100, verbose_name='Nombre',  null=True, blank=True)
-    numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente')
+    numero_cliente = models.CharField(max_length=50, verbose_name='Numero de Cliente', editable = False)
     empresa_activa = models.BooleanField(default=True, null=True, verbose_name="activa") 
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC Empresa')
-    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente')
+    num_client = models.CharField(null= True, blank=True, max_length=50, verbose_name='Numero de Cliente', editable = False)
 
-    @property
+    @property   
     def numero_cliente(self):
         list_empresas= len(Empresa.objects.all())
         list_empresas_format = str(list_empresas+1)
@@ -33,7 +69,7 @@ class Empresa(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.num_client = str(self.nombre_empresa[0]) + '-' + str(self.numero_cliente)
+            self.num_client =  (str(self.nombre_empresa[0])).upper() + '-' + str(self.numero_cliente)
         return super(Empresa, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -44,18 +80,19 @@ class Empresa(models.Model):
     
     
 class Direccion(models.Model):
+
     id = models.AutoField(primary_key=True)
-    num_interior= models.CharField(max_length=80, null=True,verbose_name='Número Interior')
-    num_exterior= models.CharField(max_length=80, null=True,verbose_name='Número Exterior')
-    calle= models.CharField(null=True, max_length=50, verbose_name='Calle')
-    colonia= models.CharField(null=True, max_length=20, verbose_name='Colonia')
-    pais= models.CharField(null=False,max_length=15, verbose_name='Pais')
-    referencia= models.CharField(max_length=254, null=True,verbose_name='Referencia')
-    localidad= models.CharField(max_length=30, null=True,verbose_name='Localidad')
-    estado= models.CharField(max_length=20, null=True,verbose_name='Estado')
-    municipio= models.CharField(max_length=20, null=True,verbose_name='Municipio')
-    codigo_postal= models.PositiveIntegerField(null=False,verbose_name='Código postal')
-    id_empresa = models.ForeignKey(Empresa, null=True, blank=True, on_delete=DO_NOTHING, verbose_name='Empresa')
+    num_interior= models.CharField(max_length=80, verbose_name='Número Interior', blank=True , null= True )
+    num_exterior= models.CharField(max_length=80, verbose_name='Número Exterior', blank=True , null= True )
+    calle= models.CharField(max_length=50, verbose_name='Calle', blank=True , null= True )
+    colonia= models.CharField(max_length=20, verbose_name='Colonia', blank=True , null= True )
+    pais= models.CharField(max_length=15, verbose_name='Pais')
+    referencia= models.CharField(max_length=254, verbose_name='Referencia', blank=True , null= True )
+    localidad= models.CharField(max_length=30, verbose_name='Localidad', blank=True , null= True )
+    estado= models.CharField(choices=EstadosMexico.choices , max_length=30, blank=True , null= True , verbose_name='Estado')
+    municipio= models.CharField(max_length=20, verbose_name='Municipio', blank=True , null= True )
+    codigo_postal= models.PositiveIntegerField(verbose_name='Código postal', blank=True , null= True )
+    id_empresa = models.ForeignKey(Empresa, on_delete=DO_NOTHING, verbose_name='Empresa')
     def __str__(self):
         return self.localidad
     def toJSON(self):
@@ -68,8 +105,8 @@ class Sucursal(models.Model):
     rfc = models.CharField(null=True, max_length=30,verbose_name='RFC')
     id_direccion= models.ForeignKey(Direccion,null=True, blank=False, on_delete= DO_NOTHING,verbose_name='dirección')
     id_empresa = models.ForeignKey(Empresa, null=True, blank=False, on_delete=DO_NOTHING, verbose_name='Empresa')
-    slug  = models.SlugField(blank=True, null=True)
-    contador_sucursales = models.CharField(max_length=50, verbose_name='Numero de Cliente')
+    slug  = models.SlugField(blank=True, null=True, verbose_name='Numero de Cliente', editable=False)
+    contador_sucursales = models.CharField(max_length=50, verbose_name='Numero de Cliente', editable=False)
 
     @property
     def contador_sucursales(self):
@@ -82,11 +119,10 @@ class Sucursal(models.Model):
         self.contador_sucursales = value
 
     def save(self, *args, **kwargs, ):
-        x = 0
         if not self.id:
             sucursals_verify = Sucursal.objects.filter(id_empresa__id = self.id_empresa.id)
             var = int(self.contador_sucursales) + 1
-            self.slug = str(self.id_empresa.num_client) + '-' + str(var)
+            self.slug = (str(self.id_empresa.num_client)).upper() + '-' + str(var)
 
         return super(Sucursal, self).save(*args, **kwargs)
 
@@ -211,26 +247,42 @@ class Recepcion(models.Model):
     ]
     
 
-    n_entrada = models.AutoField(primary_key=True,verbose_name='Número de entrada')
+    n_entrada = models.CharField(max_length=50, verbose_name='Número de entrada', editable = False)
     nombre = models.CharField(max_length=50,verbose_name='Nombre')
-    marca = models.CharField(max_length=50,verbose_name='Marca')
-    modelo = models.CharField(max_length=50,verbose_name='Modelo')
-    serie = models.CharField( verbose_name='Detalle',max_length=15)
-    identificacion= models.CharField(verbose_name='Identificación',max_length=10)
-    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25)
-    fecha_de_recepcion = models.DateField(verbose_name='Fecha de recepción',null=True)
-    modo=models.CharField(choices=modoChoices,max_length=15)
+    marca = models.CharField(max_length=50,verbose_name='Marca', blank=True , null= True)
+    modelo = models.CharField(max_length=50,verbose_name='Modelo', blank=True , null= True)
+    serie = models.CharField( verbose_name='Detalle',max_length=15, blank=True , null= True)
+    identificacion= models.CharField(verbose_name='Identificación',max_length=10, blank=True , null= True)
+    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25, blank=True , null= True)
+    fecha_de_recepcion = models.DateTimeField(auto_now_add= True)
+    modified = models.DateTimeField(auto_now=True)
+    modo=models.CharField(choices=modoChoices,max_length=15, blank=True , null= True)
     cliente= models.ForeignKey(Cliente,verbose_name='cliente',on_delete= DO_NOTHING)
-    estatus= models.CharField(choices=estatusChoices, max_length=15)
-    orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra')
-    n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización')
-    
+    estatus= models.CharField(choices=estatusChoices, default="Pendiente", max_length=15, blank=True , null= True)
+    orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra', blank=True , null= True)
+    n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización', blank=True , null= True)
+
+    @property   
+    def numero_entrada(self):
+        list_Receptions= len(Recepcion.objects.all())
+        list_reception_format = str(list_Receptions+1)
+        n_entrada_format = list_reception_format.zfill(3)
+        return n_entrada_format
+    @numero_entrada.setter
+    def numero_entrada(self, value):
+        self.numero_entrada = value
 
     def save(self, *args,**kwargs):
-        self.fecha_de_recepcion = timezone.now()
+        if not self.id:
+            now = datetime.now() 
+            self.n_entrada =  'IE' + '-' + (str(now.year)[2:]) + '-' +  str(self.numero_entrada)
+            #self.fecha_de_recepcion = timezone.now()
         return super(Recepcion, self).save(*args, **kwargs)
+
+
     def __str__(self):
         return self.nombre
+    
     def toJSON(self):
         item= model_to_dict(self)
         return item
