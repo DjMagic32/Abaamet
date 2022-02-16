@@ -245,22 +245,12 @@ class Recepcion(models.Model):
         (Pendiente, 'Pendiente'),
         (Aprobado, 'Aprobado'),
     ]
-    
-
-    n_entrada = models.CharField(max_length=50, verbose_name='Número de entrada', editable = False)
-    nombre = models.CharField(max_length=50,verbose_name='Nombre')
-    marca = models.CharField(max_length=50,verbose_name='Marca', blank=True , null= True)
-    modelo = models.CharField(max_length=50,verbose_name='Modelo', blank=True , null= True)
-    serie = models.CharField( verbose_name='Detalle',max_length=15, blank=True , null= True)
-    identificacion= models.CharField(verbose_name='Identificación',max_length=10, blank=True , null= True)
-    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25, blank=True , null= True)
-    fecha_de_recepcion = models.DateTimeField(auto_now_add= True)
-    modified = models.DateTimeField(auto_now=True)
     modo=models.CharField(choices=modoChoices,max_length=15, blank=True , null= True)
     cliente= models.ForeignKey(Cliente,verbose_name='cliente',on_delete= DO_NOTHING)
     estatus= models.CharField(choices=estatusChoices, default="Pendiente", max_length=15, blank=True , null= True)
     orden_compra= models.CharField(max_length=15, verbose_name='Orden de compra', blank=True , null= True)
     n_cotizacion= models.CharField(max_length=15,verbose_name='Cotización', blank=True , null= True)
+    n_entrada = models.CharField(max_length=50, verbose_name='Número de entrada', editable = False, primary_key=True)
 
     @property   
     def numero_entrada(self):
@@ -291,6 +281,22 @@ class Recepcion(models.Model):
         verbose_name_plural='Recepciones'
         db_table='g_recepcion'
         ordering= ['n_entrada']
+
+class RecepcionDetalle(models.Model):
+    n_entrada = models.ForeignKey(
+        Recepcion,
+        on_delete = model.DO_NOTHING
+    )
+    nombre = models.CharField(max_length=50,verbose_name='Nombre')
+    marca = models.CharField(max_length=50,verbose_name='Marca', blank=True , null= True)
+    modelo = models.CharField(max_length=50,verbose_name='Modelo', blank=True , null= True)
+    serie = models.CharField( verbose_name='Detalle',max_length=15, blank=True , null= True)
+    identificacion= models.CharField(verbose_name='Identificación',max_length=10, blank=True , null= True)
+    descripcion_particular = models.CharField(verbose_name='Descripción particular',max_length=25, blank=True , null= True)
+    fecha_de_recepcion = models.DateTimeField(auto_now_add= True)
+    modified = models.DateTimeField(auto_now=True)
+    
+
 
 class Ingreso(models.Model):
     Calibracion = 'Calibración'
